@@ -1,48 +1,29 @@
-#include <iostream>
-#include <vector>
+#include "leetcode.h"
 
 using namespace std;
-
-struct TreeNode {
-  int val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
-struct ListNode {
-  int val;
-  ListNode *next;
-  ListNode(int x) : val(x), next(NULL) {}
-};
 
 class Solution {
 public:
   ListNode *reverseBetween(ListNode *head, int m, int n) {
-    if (head == 0 or m == n){
-      return head;
-    }
-    ListNode dummy(0), *p1 = &dummy, *p2 = &dummy, *start;
+    ListNode dummy(0), *p1, *p2 = head, *p3 = &dummy, *s;
     dummy.next = head;
-    while (n > 0){
-      if (m == 0){
-        ListNode* tmp = p2->next;
-        cout << tmp->val << endl;
-        p2->next = p1;
-        p1 = p2;
-        p2 = tmp;
-      }else{
-        m--;
-        p1 = p1->next;
-        p2 = p2->next;
-        if (m == 1){
-          start = p1;
+    for (int i = 1; i <= n; ++i){
+      if (i <= m){
+        if (i == m){
+          s = p2;
+          p1 = p3;
         }
+        p3 = p2;
+        p2 = p2->next;
+      }else if (i > m){
+        ListNode* tmp = p2->next;
+        p2->next = p3;
+        p3 = p2;
+        p2 = tmp;
       }
-      n--;
     }
-    start->next->next = p2;
-    start->next = p1;
+    p1->next = p3;
+    s->next = p2;
     return dummy.next;
   }
 };
@@ -58,7 +39,7 @@ int main(){
   node1->next = node2;
   node2->next = node3;
   node3->next = node4;
-  ListNode* res = s.reverseBetween(head, 2, 4);
+  ListNode* res = s.reverseBetween(head, 1, 5);
   while (res){
     cout << res->val << ",";
     res = res->next;

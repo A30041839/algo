@@ -1,6 +1,4 @@
-#include <iostream>
-#include <math.h>
-#include <ctype.h>
+#include "leetcode.h"
 
 using namespace std;
 

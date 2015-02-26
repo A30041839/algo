@@ -1,5 +1,4 @@
-#include <iostream>
-#include <algorithm>
+#include "leetcode.h"
 
 using namespace std;
 

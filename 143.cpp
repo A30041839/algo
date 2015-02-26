@@ -1,45 +1,36 @@
-#include <iostream>
-#include <vector>
+#include "leetcode.h"
 
 using namespace std;
-
-struct TreeNode {
-  int val;
-  TreeNode *left;
-  TreeNode *right;
-  TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-};
-
-struct ListNode {
-  int val;
-  ListNode *next;
-  ListNode(int x) : val(x), next(NULL) {}
-};
 
 class Solution {
 public:
   void reorderList(ListNode *head) {
-    if (!head){
-      return;
+    ListNode dummy(0), *p1 = &dummy, *p2 = &dummy;
+    dummy.next = head;
+    while (p2 and p2->next){
+      p1 = p1->next;
+      p2 = p2->next->next;
     }
-    ListNode* p1 = head, *p2 = head, *prev;
-    while (p1->next and p2->next){
-      p2 = p1;
-      while (p2->next){
-        prev = p2;
-        p2 = p2->next;
-      }
-      if (p1->next != p2){
-        ListNode* tmp = p1->next;
-        p1->next = p2;
-        p2->next = tmp;
-        p1 = p2 = tmp;
-        prev->next = NULL;
-      }else{
-        p2->next = NULL;
-      }
+    ListNode* p3 = nullptr, *p4 = p1->next;
+    p1->next = nullptr;
+    while (p4){
+      ListNode* tmp = p4->next;
+      p4->next = p3;
+      p3 = p4;
+      p4 = tmp;
     }
-    return;
+    p1 = dummy.next;
+    p2 = p3;
+    p3 = &dummy;
+    int k = 0;
+    while (p1 and p2){
+      ListNode*& p = k == 0 ? p1 : p2;
+      p3->next = p;
+      p = p->next;
+      p3 = p3->next;
+      k = 1 - k;
+    }
+    p3->next = p1 ? p1 : p2;
   }
 };
 

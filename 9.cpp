@@ -1,7 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <limits.h>
-#include <math.h>
+#include "leetcode.h"
 
 using namespace std;
 

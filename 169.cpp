@@ -1,7 +1,4 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-#include <unordered_map>
+#include "leetcode.h"
 
 using namespace std;
 
