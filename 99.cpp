@@ -17,18 +17,9 @@ public:
   }
 
   void recoverTree1(TreeNode* root){
-    if (root){
-      if (root->right and root->val > root->right->val){
-        swap(root->val, root->right->val);
-        return;
-      }else if (root->left and root->val < root->left->val){
-        swap(root->val, root->left->val);
-        return;
-      }
-      recoverTree1(root->left);
-      recoverTree1(root->right);
-    }
+
   }
+
 };
 
 int main(){
