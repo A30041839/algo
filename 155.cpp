@@ -45,6 +45,5 @@ int main(){
   ms.push(2);
   ms.pop();
   cout << ms.getMin() << endl;
-
   return 0;
 }
