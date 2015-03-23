@@ -46,8 +46,8 @@ int main(){
   TreeNode* root = new TreeNode(2);
   TreeNode* node1 = new TreeNode(3);
   TreeNode* node2 = new TreeNode(1);
-  //root->left = node1;
-  //root->right = node2;
+  root->left = node1;
+  root->right = node2;
   s.recoverTree(root);
   inorder(root);
   cout << endl;
