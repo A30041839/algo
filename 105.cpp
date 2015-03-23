@@ -2,22 +2,6 @@
 
 using namespace std;
 
-void preorderTraverse(TreeNode* root){
-  if (root){
-    cout << root->val << ",";
-    preorderTraverse(root->left);
-    preorderTraverse(root->right);
-  }
-}
-
-void inorderTraverse(TreeNode* root){
-  if (root){
-    inorderTraverse(root->left);
-    cout << root->val << ",";
-    inorderTraverse(root->right);
-  }
-}
-
 class Solution {
 public:
   TreeNode *buildTree(vector<int> &preorder, vector<int> &inorder) {
@@ -39,12 +23,12 @@ public:
 
 int main(){
   Solution s;
-  vector<int> preorder = {1,5,2,7,4};
-  vector<int> inorder = {5,2,1,4,7};
-  TreeNode* root = s.buildTree(preorder, inorder);
-  preorderTraverse(root);
+  vector<int> v_preorder = {1,5,2,7,4};
+  vector<int> v_inorder = {5,2,1,4,7};
+  TreeNode* root = s.buildTree(v_preorder, v_inorder);
+  preorder(root);
   cout << endl;
-  inorderTraverse(root);
+  inorder(root);
   cout << endl;
   return 0;
 }

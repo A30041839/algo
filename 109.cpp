@@ -2,14 +2,6 @@
 
 using namespace std;
 
-void inorder(TreeNode* root){
-  if (root){
-    inorder(root->left);
-    cout << root->val << ",";
-    inorder(root->right);
-  }
-}
-
 class Solution {
 public:
   TreeNode *sortedListToBST(ListNode *head) {

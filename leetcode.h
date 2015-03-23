@@ -18,6 +18,8 @@
 #include <vector>
 #include <list>
 
+
+//data structures
 struct TreeNode {
   int val;
   TreeNode *left;
@@ -62,3 +64,29 @@ struct TreeLinkNode {
   TreeLinkNode *left, *right, *next;
   TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
 };
+
+
+//public functions
+void inorder(TreeNode* root){
+  if (root){
+    inorder(root->left);
+    std::cout << root->val << ",";
+    inorder(root->right);
+  }
+}
+
+void postorder(TreeNode* root){
+  if (root){
+    postorder(root->left);
+    postorder(root->right);
+    std::cout << root->val << ",";
+  }
+}
+
+void preorder(TreeNode* root){
+  if (root){
+    std::cout << root->val << ",";
+    preorder(root->left);
+    preorder(root->right);
+  }
+}
