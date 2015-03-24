@@ -5,12 +5,13 @@ using namespace std;
 class Solution {
 public:
   void rotate(int nums[], int n, int k) {
-    if (n < 1){
+    if (n <= 1){
       return;
     }
-    rotate1(nums, n, k);
+    rotate3(nums, n, k);
   }
 
+  //trivial solution1
   void rotate1(int nums[], int n, int k) {
     k = k % n;
     vector<int> tmp;
@@ -25,6 +26,7 @@ public:
     }
   }
 
+  //trivial solution2
   void rotate2(int nums[], int n, int k) {
     vector<int> tmp(n, 0);
     for (int i = 0; i < n; ++i){
@@ -34,19 +36,37 @@ public:
       nums[i] = tmp[i];
     }
   }
-};
-
-void print_arr(int nums[], int n){
-  for (int i = 0; i < n; ++i){
-    cout << nums[i] << ",";
+  
+  //in-place algorithm, use only O(1) space
+  void rotate3(int nums[], int n, int k) {
+    int cnt = 0;
+    int start = 0;
+    while (cnt != n) {
+      cnt += _rotate3_helper(nums, n, k, start++);
+    }
   }
-  cout << endl;
-}
+
+  int _rotate3_helper(int nums[], int n, int k, int start) {
+    int tmp1 = nums[start];
+    int i = (start + k) % n;
+    int cnt = 0;
+    while (i != start) {
+      int tmp2 = nums[i];
+      nums[i] = tmp1;
+      tmp1 = tmp2;
+      i = (i + k) % n;
+      cnt++;
+    }
+    nums[start] = tmp1;
+    return ++cnt;
+  }
+
+};
 
 int main(){
   Solution s;
-  int nums[] = {1,2,3,4,5,6};
-  s.rotate(nums,6,2);
-  print_arr(nums, 6);
+  int nums[] = {1,2,3,4,5};
+  s.rotate(nums,5,10);
+  print_array(nums, 5);
   return 0;
 }

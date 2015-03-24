@@ -90,3 +90,10 @@ void preorder(TreeNode* root){
     preorder(root->right);
   }
 }
+
+void print_array(int nums[], int n){
+  for (int i = 0; i < n; ++i){
+    std::cout << nums[i] << ",";
+  }
+  std::cout << std::endl;
+}
