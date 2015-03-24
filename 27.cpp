@@ -4,6 +4,8 @@ using namespace std;
 
 class Solution {
 public:
+  //O(n) solution, similar with partition algorithm
+  //in quick sort.
   int removeElement(int A[], int n, int elem) {
     int i = -1;
     for (int j = 0; j < n; ++j){
@@ -16,12 +18,9 @@ public:
 };
 
 int main(){
-  int A[6] = {1, 1, 1, 1, 1, 2};
   Solution s;
+  int A[6] = {1, 1, 1, 1, 1, 2};
   int len = s.removeElement(A, 6, 1);
-  for (int i = 0; i < len; ++i){
-    cout << A[i] << ",";
-  }
-  cout << endl;
+  print_array(A, len);
   return 0;
 }
