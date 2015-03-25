@@ -5,30 +5,24 @@ using namespace std;
 class Solution {
 public:
   vector<int> plusOne(vector<int> &digits) {
+    vector<int> res;
     int carry = 1;
-    for (int i = digits.size() - 1; i >= 0; --i){
-      digits[i] += carry;
-      if (digits[i] >= 10){
-        digits[i] %= 10;
-        carry = 1;
-      }else{
-        carry = 0;
-      }
+    for (int i = digits.size() - 1; i >= 0; --i) {
+      int tmp = digits[i] + carry;
+      carry = tmp >= 10 ? 1 : 0;
+      tmp = tmp >= 10 ? tmp % 10 : tmp;
+      res.push_back(tmp);
     }
-    if (carry == 0){
-      return digits;
-    }else{
-      vector<int> res(digits.size() + 1, 1);
-      for (int k = 1; k <= digits.size(); ++k){
-        res[k] = digits[k - 1];
-      }
-      return res;
+    if (carry == 1) {
+      res.push_back(1);
     }
+    reverse(res.begin(), res.end());
+    return res;
   }
 };
 
 int main(){
-  vector<int> digits = {1, 0, 1};
+  vector<int> digits = {9, 9, 9};
   Solution s;
   vector<int> sum = s.plusOne(digits);
   for (int a : sum){
