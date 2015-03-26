@@ -5,19 +5,11 @@ using namespace std;
 class Solution {
 public:
   vector<int> getRow(int rowIndex) {
-    if (rowIndex == 0){
-      return {1};
-    }
-    vector<int> res(rowIndex + 1, 0);
-    res[0] = res[1] = 1;
-    for (int i = 2; i <= rowIndex; ++i){
-      int prev = res[0];
-      for (int j = 1; j < i; ++j){
-        int tmp = res[j];
-        res[j] += prev;
-        prev = tmp;
+    vector<int> res(rowIndex + 1, 1);
+    for (int i = 0; i < rowIndex + 1; ++i) {
+      for (int j = i - 1; j >= 1; --j) {
+        res[j] += res[j - 1];
       }
-      res[i] = 1;
     }
     return res;
   }
