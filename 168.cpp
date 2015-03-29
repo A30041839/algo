@@ -23,6 +23,5 @@ int main(){
   cout << s.convertToTitle(52) << endl;
   cout << s.convertToTitle(100) << endl;
   cout << s.convertToTitle(223128) << endl;
-
   return 0;
 }
