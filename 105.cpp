@@ -9,16 +9,15 @@ public:
   }
 
   TreeNode* _buildTree(vector<int>::iterator pre_it, vector<int>::iterator in_it, size_t n){
-    if (n == 0){
+    if (n == 0) {
       return nullptr;
     }
-    TreeNode* root = new TreeNode(*pre_it);
+    TreeNode* node = new TreeNode(*pre_it);
     vector<int>::iterator pos = find(in_it, in_it + n, *pre_it);
-    root->left = _buildTree(pre_it + 1, in_it, pos - in_it);
-    root->right = _buildTree(pre_it + 1 + (pos - in_it), pos + 1, n - (pos - in_it) - 1);
-    return root;
+    node->left = _buildTree(pre_it + 1, in_it, pos - in_it);
+    node->right = _buildTree(pre_it + (pos - in_it) + 1, pos + 1, n - (pos - in_it) - 1);
+    return node;
   }
-
 };
 
 int main(){
