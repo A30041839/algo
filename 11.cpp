@@ -11,15 +11,15 @@ public:
   int maxArea1(vector<int> &height){
     int res = INT_MIN;
     int l = 0, r = height.size() - 1;
-    while (l < r){
+    while (l < r) {
       int h_min = min(height[l], height[r]);
       res = max(res, h_min * (r - l));
-      if (height[l] < height[r]){
-        while (l < r and height[l] <= h_min){
+      if (height[l] < height[r]) {
+        while (l < r and height[l] <= h_min) {
           l++;
         }
-      }else{
-        while (l < r and height[r] <= h_min){
+      }else {
+        while (l < r and height[r] <= h_min) {
           r--;
         }
       }

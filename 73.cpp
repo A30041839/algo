@@ -11,30 +11,42 @@ public:
   }
 
   void setZeroes1(vector<vector<int> > &matrix) {
-    int m = matrix.size();
-    int n = matrix[0].size();
-    vector<int> zero_row(m, 0);
-    vector<int> zero_col(n, 0);
-    for (int i = 0; i < m; ++i){
-      for (int j = 0; j < n; ++j){
-        if (matrix[i][j] == 0){
-          zero_row[i] = 1;
-          zero_col[j] = 1;
+    int m = (int)matrix.size();
+    int n = (int)matrix[0].size();
+    bool flag1 = false, flag2 = false;
+    for (int i = 0; i < n; ++i) {
+      if (matrix[0][i] == 0) {
+        flag1 = true;
+      }
+    }
+    for (int i = 0; i < m; ++i) {
+      if (matrix[i][0] == 0) {
+        flag2 = true;
+      }
+    }
+    for (int i = 1; i < m; ++i) {
+      for (int j = 1; j < n; ++j) {
+        if (matrix[i][j] == 0) {
+          matrix[0][j] = 0;
+          matrix[i][0] = 0;
         }
       }
     }
-    for (int i = 0; i < m; ++i){
-      if (zero_row[i] == 1){
-        for (int j = 0; j < matrix[0].size(); ++j){
+    for (int i = 1; i < m; ++i) {
+      for (int j = 1; j < n; ++j) {
+        if (matrix[0][j] == 0 or matrix[i][0] == 0) {
           matrix[i][j] = 0;
         }
       }
     }
-    for (int j = 0; j < n; ++j){
-      if (zero_col[j] == 1){
-        for (int i = 0; i < matrix.size(); ++i){
-          matrix[i][j] = 0;
-        }
+    if (flag1) {
+      for (int i = 0; i < n; ++i) {
+        matrix[0][i] = 0;
+      }
+    }
+    if (flag2) {
+      for (int i = 0; i < m; ++i) {
+        matrix[i][0] = 0;
       }
     }
   }
