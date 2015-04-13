@@ -6,13 +6,13 @@ class Solution {
 public:
   int searchInsert(int A[], int n, int target) {
     int low = 0, high = n - 1;
-    while (low <= high){
+    while (low <= high) {
       int mid = (low + high) / 2;
-      if (A[mid] == target){
+      if (A[mid] == target) {
         return mid;
-      }else if (A[mid] < target){
+      }else if (A[mid] < target) {
         low = mid + 1;
-      }else{
+      }else {
         high = mid - 1;
       }
     }

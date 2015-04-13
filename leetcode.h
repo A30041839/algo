@@ -97,3 +97,11 @@ void print_array(int nums[], int n){
   }
   std::cout << std::endl;
 }
+
+template <class T>
+void print_vec(std::vector<T>& v) {
+  for (T& elem : v) {
+    std::cout << elem << ",";
+  }
+  std::cout << std::endl;
+}
