@@ -9,15 +9,15 @@ public:
     return bfs(start, end, dict);
   }
 
-  void dfs_path(string cur, unordered_map<string, vector<string>>& trace, vector<vector<string>>& res,
-                vector<string>& path){
-    if (!trace[cur].size()){
+  void dfs_path(string start, string cur, unordered_map<string, vector<string>>& trace,
+    vector<vector<string>>& res, vector<string>& path){
+    if (cur == start){
       res.push_back({path.rbegin(), path.rend()});
       return;
     }
     for (auto& w : trace[cur]){
       path.push_back(w);
-      dfs_path(w, trace, res, path);
+      dfs_path(start, w, trace, res, path);
       path.pop_back();
     }
   }
@@ -27,17 +27,16 @@ public:
     vector<vector<string>> res;
     unordered_map<string, vector<string>> trace;
     unordered_set<string> visit;
+    visit.insert(start);
     q.push(start);
-    trace[start] = {};
     bool stop = false;
 
     while (!q.empty() and !stop){
-      vector<string> level_words;
-      for (int i = 0; i < q.size(); ++i){
+      unordered_set<string> next_level;
+      int len = q.size();
+      for (int i = 0; i < len; ++i){
         string w = q.front();
-        level_words.push_back(w);
         q.pop();
-        visit.insert(w);
         if (w == end){
           stop = true;
           break;
@@ -47,21 +46,21 @@ public:
           for (char c = 'a'; c <= 'z'; ++c){
             w_next[j] = c;
             if (w_next != w and dict.count(w_next) > 0 and !visit.count(w_next)){
-              q.push(w_next);
               trace[w_next].push_back(w);
+              next_level.insert(w_next);
             }
           }
         }
       }
-      for (auto& w : level_words){
-        dict.erase(w);
+      for (string w_next : next_level) {
+        visit.insert(w_next);
+        q.push(w_next);
       }
     }
     vector<string> path = {end};
-    dfs_path(end, trace, res, path);
+    dfs_path(start, end, trace, res, path);
     return res;
   }
-
 };
 
 int main(){

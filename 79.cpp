@@ -2,61 +2,52 @@
 
 using namespace std;
 
+const vector<int> dx = {1, -1, 0, 0};
+const vector<int> dy = {0, 0, 1, -1};
+
 class Solution {
 public:
   bool exist(vector<vector<char> > &board, string word) {
-    if (!board.size()){
+    if (board.empty()){
       return false;
     }
     int m = board.size();
     int n = board[0].size();
-    vector<vector<int> > visit(m, vector<int>(n, 0));
+    vector<vector<bool> > visit(m, vector<bool>(n, false));
     for (int i = 0; i < m; ++i){
       for (int j = 0; j < n; ++j){
         if (board[i][j] == word[0]){
-          visit[i][j] = 1;
-          if (exist1(board, visit, i, j, m, n, word.substr(1))){
+          visit[i][j] = true;
+          if (exist_dfs(board, visit, i, j, m, n, word.substr(1))){
             return true;
           }
-          visit[i][j] = 0;
+          visit[i][j] = false;
         }
       }
     }
     return false;
   }
 
-  bool exist1(vector<vector<char> >& board, vector<vector<int> >& visit, int x, int y,
-              int m, int n, string word) {
+private:
+  bool is_valid(int x, int y, int m, int n) {
+    return x >= 0 and x < m and y >= 0 and y < n;
+  }
+
+  bool exist_dfs(vector<vector<char> >& board, vector<vector<bool> >& visit,
+    int curx, int cury, int m, int n, string word) {
     if (word.empty()){
       return true;
     }
-    if (y < n - 1 and board[x][y + 1] == word[0] and visit[x][y + 1] == 0){
-      visit[x][y + 1] = 1;
-      if (exist1(board, visit, x, y + 1, m, n, word.substr(1))){
-        return true;
+    for (int i = 0; i < 4; ++i) {
+      int nx = curx + dx[i];
+      int ny = cury + dy[i];
+      if (is_valid(nx, ny, m, n) and !visit[nx][ny] and board[nx][ny] == word[0]) {
+        visit[nx][ny] = true;
+        if (exist_dfs(board, visit, nx, ny, m, n, word.substr(1))) {
+          return true;
+        }
+        visit[nx][ny] = false;
       }
-      visit[x][y + 1] = 0;
-    }
-    if (x < m - 1 and board[x + 1][y] == word[0] and visit[x + 1][y] == 0){
-      visit[x + 1][y] = 1;
-      if (exist1(board, visit, x + 1, y, m, n, word.substr(1))){
-        return true;
-      }
-      visit[x + 1][y] = 0;
-    }
-    if (y > 0 and board[x][y - 1] == word[0] and visit[x][y - 1] == 0){
-      visit[x][y - 1] = 1;
-      if (exist1(board, visit, x, y - 1, m, n, word.substr(1))){
-        return true;
-      }
-      visit[x][y - 1] = 0;
-    }
-    if (x > 0 and board[x - 1][y] == word[0] and visit[x - 1][y] == 0){
-      visit[x - 1][y] = 1;
-      if (exist1(board, visit, x - 1, y, m, n, word.substr(1))){
-        return true;
-      }
-      visit[x - 1][y] = 0;
     }
     return false;
   }
@@ -70,7 +61,7 @@ int main(){
   board.push_back({'A','D','E','E'});
   string word1 = "ABCCED";
   string word2 = "SEE";
-  string word3 = "ADEES";
+  string word3 = "ADEEY";
 
   if (s.exist(board, word1)){
     cout << "true" << endl;

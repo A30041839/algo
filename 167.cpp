@@ -5,26 +5,33 @@ using namespace std;
 class Solution {
 public:
   vector<int> twoSum(vector<int> &numbers, int target) {
-    for (int i = 0; i < numbers.size(); ++i) {
-      int j = binary_search(numbers, i + 1, numbers.size() - 1, target - numbers[i]);
-      if (j != -1) {
-        return {i + 1, j + 1};
+    return twoSum2(numbers, target);
+  }
+
+private:
+  vector<int> twoSum1(vector<int>& numbers, int target) {
+    unordered_map<int, int> mp;
+    int n = numbers.size();
+    for (int i = 0; i < n; ++i) {
+      if (mp.count(target - numbers[i])) {
+        return {mp[target - numbers[i]], i + 1};
+      }else {
+        mp[numbers[i]] = i + 1;
       }
     }
   }
 
-  int binary_search(vector<int> &numbers, int low, int high, int target) {
-    while (low <= high) {
-      int mid = (low + high) / 2;
-      if (numbers[mid] > target) {
-        high = mid - 1;
-      }else if (numbers[mid] < target) {
-        low = mid + 1;
+  vector<int> twoSum2(vector<int>& numbers, int target) {
+    int n = numbers.size();
+    int beg = 0, end = n - 1;
+    while (beg < end) {
+      int sum = numbers[beg] + numbers[end];
+      if (sum == target) {
+        return {beg + 1, end + 1};
       }else {
-        return mid;
+        sum > target ? end-- : beg++;
       }
     }
-    return -1;
   }
 };
 

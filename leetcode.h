@@ -12,6 +12,7 @@
 #include <stack>
 #include <stdexcept>
 #include <string>
+#include <map>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>

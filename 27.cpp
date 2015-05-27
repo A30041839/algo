@@ -6,11 +6,12 @@ class Solution {
 public:
   //O(n) solution, similar with partition algorithm
   //in quick sort.
-  int removeElement(int A[], int n, int elem) {
+  int removeElement(vector<int>& nums, int val) {
     int i = -1;
+    int n = nums.size();
     for (int j = 0; j < n; ++j){
-      if (A[j] != elem){
-        swap(A[++i], A[j]);
+      if (nums[j] != val){
+        swap(nums[++i], nums[j]);
       }
     }
     return i + 1;
@@ -19,8 +20,8 @@ public:
 
 int main(){
   Solution s;
-  int A[6] = {1, 1, 1, 1, 1, 2};
-  int len = s.removeElement(A, 6, 1);
-  print_array(A, len);
+  vector<int> nums = {1, 1, 1, 1, 1, 2};
+  int len = s.removeElement(nums, 1);
+  print_vec(nums);
   return 0;
 }

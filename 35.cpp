@@ -4,13 +4,13 @@ using namespace std;
 
 class Solution {
 public:
-  int searchInsert(int A[], int n, int target) {
-    int low = 0, high = n - 1;
+  int searchInsert(vector<int>& nums, int target) {
+    int low = 0, high = nums.size() - 1;
     while (low <= high) {
       int mid = (low + high) / 2;
-      if (A[mid] == target) {
+      if (nums[mid] == target) {
         return mid;
-      }else if (A[mid] < target) {
+      }else if (nums[mid] < target) {
         low = mid + 1;
       }else {
         high = mid - 1;
@@ -22,7 +22,7 @@ public:
 
 int main(){
   Solution s;
-  int A[1] = {1};
-  cout << s.searchInsert(A, 1, 2) << endl;
+  vector<int> A = {1};
+  cout << s.searchInsert(A, 1) << endl;
   return 0;
 }

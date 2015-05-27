@@ -4,15 +4,16 @@ using namespace std;
 
 class Solution {
 public:
-  void rotate(int nums[], int n, int k) {
+  void rotate(vector<int>& nums, int k) {
+    int n = nums.size();
     if (n <= 1){
       return;
     }
-    rotate3(nums, n, k);
+    rotate4(nums, n, k);
   }
 
   //trivial solution1
-  void rotate1(int nums[], int n, int k) {
+  void rotate1(vector<int>& nums, int n, int k) {
     k = k % n;
     vector<int> tmp;
     for (int i = k; i > 0; --i){
@@ -27,7 +28,7 @@ public:
   }
 
   //trivial solution2
-  void rotate2(int nums[], int n, int k) {
+  void rotate2(vector<int>& nums, int n, int k) {
     vector<int> tmp(n, 0);
     for (int i = 0; i < n; ++i){
       tmp[(i + k) % n] = nums[i];
@@ -36,9 +37,9 @@ public:
       nums[i] = tmp[i];
     }
   }
-  
+
   //in-place algorithm, use only O(1) space
-  void rotate3(int nums[], int n, int k) {
+  void rotate3(vector<int>& nums, int n, int k) {
     int cnt = 0;
     int start = 0;
     while (cnt != n) {
@@ -46,7 +47,7 @@ public:
     }
   }
 
-  int _rotate3_helper(int nums[], int n, int k, int start) {
+  int _rotate3_helper(vector<int>& nums, int n, int k, int start) {
     int tmp1 = nums[start];
     int i = (start + k) % n;
     int cnt = 0;
@@ -61,12 +62,18 @@ public:
     return ++cnt;
   }
 
+  void rotate4(vector<int>& nums, int n, int k) {
+    k %= n;
+    reverse(nums.begin(), nums.begin() + n - k);
+    reverse(nums.begin() + n - k, nums.end());
+    reverse(nums.begin(), nums.end());
+  }
 };
 
 int main(){
   Solution s;
-  int nums[] = {1,2,3,4,5};
-  s.rotate(nums,5,10);
-  print_array(nums, 5);
+  vector<int> nums = {1,2,3,4,5};
+  s.rotate(nums,10);
+  print_vec(nums);
   return 0;
 }

@@ -5,54 +5,62 @@ using namespace std;
 class Solution {
 public:
   vector<vector<int> > subsetsWithDup(vector<int> &S) {
+    vector<vector<int>> res;
+    vector<int> tmp;
     sort(S.begin(), S.end());
-    unordered_map<int, int> mp;
-    vector<vector<int> > res = {{}};
-    vector<int> uniqS;
-    for (int i = 0; i < S.size(); ++i){
-      mp[S[i]]++;
-      if (uniqS.empty() or uniqS.back() != S[i]){
-        uniqS.push_back(S[i]);
-      }
-    }
-    _subsetsWithDup(uniqS, mp, res, 0);
+    res.push_back(tmp);
+    subsetsWithDup3(res, tmp, S, 0);
     return res;
   }
 
-  vector<vector<int> > _subsetsWithDup(vector<int>& v, unordered_map<int, int>& mp,
-                                       vector<vector<int> >& res, int i){
-    if (i == v.size()){
-      return {{}};
-    }
-    vector<vector<int> > res1;
-    for (auto& v1 : _subsetsWithDup(v, mp, res, i + 1)){
-      res1.push_back(v1);
-      vector<int> v2 = v1;
-      v2.insert(v2.begin(), v[i]);
-      res1.push_back(v2);
-      vector<int> tmp;
-      _expand(0, v2, mp, res, tmp);
-    }
-    return res1;
-  }
-
-  void _expand(int i, vector<int>& v, unordered_map<int, int>& mp,
-               vector<vector<int> >& res, vector<int>& tmp){
-    if (i == v.size()){
+  void subsetsWithDup1(map<int, int>::iterator iter, map<int, int>::iterator iter_end,
+    vector<int>& tmp, vector<vector<int>>& res) {
+    if (iter == iter_end) {
       res.push_back(tmp);
       return;
     }
-    for (int k = 1; k <= mp[v[i]]; ++k){
-      tmp.insert(tmp.end(), k, v[i]);
-      _expand(i + 1, v, mp, res, tmp);
-      tmp.erase(tmp.end() - k, tmp.end());
+    for (int i = 0; i <= iter->second; ++i) {
+      tmp.insert(tmp.end(), i, iter->first);
+      subsetsWithDup1(++iter, iter_end, tmp, res);
+      --iter;
+      tmp.erase(tmp.end() - i, tmp.end());
+    }
+  }
+
+  vector<vector<int>> subsetsWithDup2(map<int, int>& mp) {
+    vector<vector<int>> res = {{}};
+    for (map<int, int>::iterator iter = mp.begin(); iter != mp.end(); ++iter) {
+      int n = res.size();
+      for (int i = 0; i < n; ++i) {
+        vector<int> tmp = res[i];
+        for (int k = 0; k < iter->second; ++k) {
+          tmp.push_back(iter->first);
+          res.push_back(tmp);
+        }
+      }
+    }
+    return res;
+  }
+
+  void subsetsWithDup3(vector<vector<int>>& res, vector<int>& tmp, vector<int>& S,
+    int start) {
+    for (int i = start; i < S.size(); ++i) {
+      if (i > start and S[i - 1] == S[i]) {
+        continue;
+      }
+      tmp.push_back(S[i]);
+      res.push_back(tmp);
+      if (i < S.size() - 1) {
+        subsetsWithDup3(res, tmp, S, i + 1);
+      }
+      tmp.pop_back();
     }
   }
 };
 
 int main(){
   Solution s;
-  vector<int> v1 = {1, 1, 2, 2};
+  vector<int> v1 = {1,1,2};
   vector<vector<int> > res = s.subsetsWithDup(v1);
   for (auto& v2 : res){
     for (auto& i : v2){
