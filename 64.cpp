@@ -5,26 +5,49 @@ using namespace std;
 class Solution {
 public:
   int minPathSum(vector<vector<int> > &grid) {
-    return minPathSum1(grid);
+    if (grid.empty() or grid[0].empty()) {
+      return 0;
+    }else {
+      return minPathSum2(grid);
+    }
   }
 
+  //O(mn) space
   int minPathSum1(vector<vector<int> >& grid){
-    int k1 = grid.size();
-    int k2 = grid[0].size();
-    vector<vector<int> > dp(k1, vector<int>(k2, 0));
-    dp[k1 - 1][k2 - 1] = grid[k1 - 1][k2 - 1];
-    for (int i = k2 - 2; i >= 0; --i){
-      dp[k1 - 1][i] = grid[k1 - 1][i] + dp[k1 - 1][i + 1];
-    }
-    for (int i = k1 - 2; i >= 0; --i){
-      dp[i][k2 - 1] = grid[i][k2 - 1] + dp[i + 1][k2 - 1];
-    }
-    for (int i = k1 - 2; i >=0; --i){
-      for (int j = k2 - 2; j >= 0; --j){
-        dp[i][j] = grid[i][j] + min(dp[i + 1][j], dp[i][j + 1]);
+    int m = grid.size();
+    int n = grid[0].size();
+    vector<vector<int>> dp(m, vector<int>(n, 0));
+    for (int i = 0; i < m; ++i) {
+      for (int j = 0; j < n; ++j) {
+        if (i == 0 and j == 0) {
+          dp[0][0] = grid[0][0];
+        }else if (i == 0) {
+          dp[0][j] = dp[0][j - 1] + grid[0][j];
+        }else if (j == 0) {
+          dp[i][0] = dp[i - 1][0] + grid[i][0];
+        }else {
+          dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+        }
       }
     }
-    return dp[0][0];
+    return dp[m - 1][n - 1];
+  }
+
+  //O(n) space
+  int minPathSum2(vector<vector<int> >& grid){
+    int m = grid.size();
+    int n = grid[0].size();
+    vector<int> dp(n, 0);
+    for (int i = 0; i < m; ++i) {
+      for (int j = 0; j < n; ++j) {
+        if (i == 0) {
+          j == 0 ? dp[0] = grid[0][0] : dp[j] = dp[j - 1] + grid[0][j];
+        }else {
+          j == 0 ? dp[0] += grid[i][0] : dp[j] = min(dp[j - 1], dp[j]) + grid[i][j];
+        }
+      }
+    }
+    return dp[n - 1];
   }
 };
 

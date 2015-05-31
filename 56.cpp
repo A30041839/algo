@@ -2,10 +2,6 @@
 
 using namespace std;
 
-bool cmp(Interval& a, Interval& b){
-  return a.start < b.start;
-}
-
 class Solution {
 public:
   vector<Interval> merge(vector<Interval> &intervals) {
@@ -16,9 +12,11 @@ public:
   }
 
   vector<Interval> merge1(vector<Interval>& intervals) {
-    sort(intervals.begin(), intervals.end(), cmp);
+    sort(intervals.begin(), intervals.end(),
+      [] (const Interval& a, const Interval& b) {return a.start < b.start;});
     vector<Interval> res;
-    for (int i = 1; i < intervals.size(); ++i){
+    int n = intervals.size();
+    for (int i = 1; i < n; ++i){
       if (intervals[i].start <= intervals[i - 1].end){
         intervals[i].start = intervals[i - 1].start;
         intervals[i].end = max(intervals[i].end, intervals[i - 1].end);

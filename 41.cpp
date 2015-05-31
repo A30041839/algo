@@ -4,28 +4,51 @@ using namespace std;
 
 class Solution {
 public:
-  int firstMissingPositive(int A[], int n) {
-    unordered_set<int> s;
-    int res = 1;
-    for (int i = 0; i < n; ++i){
-      s.insert(A[i]);
-      int next = A[i] + 1;
-      while (s.count(next) > 0){
-        next++;
-      }
-      if (res == A[i]){
-        res = next;
-      }else if (s.count(next) == 0 and next > 0){
-        res = min(next, res);
+  int firstMissingPositive(vector<int>& nums) {
+    return firstMissingPositive2(nums);
+  }
+
+  //similar to bucket sort, A[i] -> i + 1
+  int firstMissingPositive1(vector<int>& nums) {
+    int n = nums.size();
+    int i = 0;
+    while (i < n) {
+      if (nums[i] > 0 and nums[i] < n and nums[i] != nums[nums[i] - 1]) {
+        swap(nums[i], nums[nums[i] - 1]);
+      }else {
+        i++;
       }
     }
-    return res;
+    for (i = 0; i < n; ++i) {
+      if (nums[i] != i + 1) {
+        return i + 1;
+      }
+    }
+    return n + 1;
+  }
+
+  int firstMissingPositive2(vector<int>& nums) {
+    int n = nums.size();
+    for (int i = 0; i < n; ++i) {
+      while (nums[i] != i + 1) {
+        if (nums[i] <= 0 or nums[i] > n or nums[i] == nums[nums[i] - 1]) {
+          break;
+        }
+        swap(nums[i], nums[nums[i] - 1]);
+      }
+    }
+    for (int i = 0; i < n; ++i) {
+      if (nums[i] != i + 1) {
+        return i + 1;
+      }
+    }
+    return n + 1;
   }
 };
 
 int main(){
   Solution s;
-  int A[] = {5,-1,9,2,1,6};
-  cout << s.firstMissingPositive(A,6) << endl;
+  vector<int> nums = {3};
+  cout << s.firstMissingPositive(nums) << endl;
   return 0;
 }

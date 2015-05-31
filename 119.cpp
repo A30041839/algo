@@ -5,6 +5,10 @@ using namespace std;
 class Solution {
 public:
   vector<int> getRow(int rowIndex) {
+    return getRow1(rowIndex);
+  }
+
+  vector<int> getRow1(int rowIndex) {
     vector<int> res(rowIndex + 1, 1);
     for (int i = 0; i < rowIndex + 1; ++i) {
       for (int j = i - 1; j >= 1; --j) {

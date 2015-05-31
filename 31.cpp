@@ -4,33 +4,11 @@ using namespace std;
 
 class Solution {
 public:
-  void nextPermutation(vector<int> &num) {
-    nextPermutation1(num);
+  void nextPermutation(vector<int>& nums) {
+    nextPermutation1(nums);
   }
 
-  void nextPermutation1(vector<int> &num) {
-    if (num.empty()) {
-      return;
-    }
-    int pos1 = -1, pos2 = 0;
-    for (int i = (int)num.size() - 1; i > 0; --i) {
-      if (num[i - 1] < num[i]) {
-        pos1 = i - 1;
-        break;
-      }
-    }
-    if (pos1 == -1) {
-      sort(num.begin(), num.end());
-      return;
-    }
-    for (int i = (int)num.size() - 1; i > 0; --i) {
-      if (num[i] > num[pos1]) {
-        pos2 = i;
-        break;
-      }
-    }
-    swap(num[pos1], num[pos2]);
-    reverse(num.begin() + pos1 + 1, num.end());
+  void nextPermutation1(vector<int> &nums) {
   }
 };
 

@@ -5,8 +5,35 @@ using namespace std;
 class Solution {
 public:
   vector<Interval> insert(vector<Interval> &intervals, Interval newInterval) {
+    return insert1(intervals, newInterval);
+  }
+
+  vector<Interval> insert1(vector<Interval> &intervals, Interval newInterval) {
+    vector<Interval> res;
+    int n = intervals.size();
+    bool flag = true;
+    for (int i = 0; i < n; ++i) {
+      if (intervals[i].start > newInterval.end or intervals[i].end < newInterval.start) {
+        if (newInterval.end < intervals[i].start and flag) {
+          res.push_back(newInterval);
+          flag = false;
+        }
+        res.push_back(intervals[i]);
+      }else {
+        newInterval.start = min(newInterval.start, intervals[i].start);
+        newInterval.end = max(newInterval.end, intervals[i].end);
+      }
+    }
+    if (flag) {
+      res.push_back(newInterval);
+    }
+    return res;
+  }
+
+  vector<Interval> insert2(vector<Interval> &intervals, Interval newInterval) {
     int begin = -1, end = -1, pos = 0;
-    for (int i = 0; i < intervals.size(); ++i){
+    int n = intervals.size();
+    for (int i = 0; i < n; ++i){
       if (intervals[i].start < newInterval.start){
         pos = i + 1;
       }
@@ -35,7 +62,8 @@ int main(){
   v.push_back(Interval(6,7));
   v.push_back(Interval(8,10));
   v.push_back(Interval(12,16));
-  vector<Interval> res = s.insert(v, Interval(-1,0));
+  v.clear();
+  vector<Interval> res = s.insert(v, Interval(-1,2));
   for (auto& interval : res){
     printf("[%d,%d] ", interval.start, interval.end);
   }

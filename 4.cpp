@@ -4,42 +4,45 @@ using namespace std;
 
 class Solution {
 public:
-  double findMedianSortedArrays(int A[], int m, int B[], int n) {
+  double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+    int m = nums1.size(), n = nums2.size();
     int mid = (m + n) / 2;
     if ((m + n) % 2){
-      return findKthSmallestSortedArrays(A, m, B, n, mid + 1);
+      return findKth(nums1.begin(), m, nums2.begin(), n, mid + 1);
     }else{
-      return (findKthSmallestSortedArrays(A, m, B, n, mid) +
-              findKthSmallestSortedArrays(A, m, B, n, mid + 1)) / 2.0;
+      return (double)(findKth(nums1.begin(), m, nums2.begin(), n, mid) +
+              findKth(nums1.begin(), m, nums2.begin(), n, mid + 1)) / 2.0;
     }
   }
 
-  int findKthSmallestSortedArrays(int A[], int m, int B[], int n, int k){
+  int findKth(vector<int>::iterator iter1, int m, vector<int>::iterator iter2, int n, int k){
     if (m > n){
-      return findKthSmallestSortedArrays(B, n, A, m, k);
+      return findKth(iter2, n, iter1, m, k);
     }
     if (m == 0){
-      return B[k - 1];
+      return *(iter2 + k - 1);
     }
     if (k == 1){
-      return min(A[0], B[0]);
+      return min(*iter1, *iter2);
     }
     int i = min(k / 2, m);
     int j = k - i;
-    if (A[i - 1] > B[j - 1]){
-      return findKthSmallestSortedArrays(A, m, B + j, n - j, k - j);
-    }else if (A[i - 1] < B[j - 1]){
-      return findKthSmallestSortedArrays(A + i, m - i, B, n, k - i);
+    int a = *(iter1 + i - 1);
+    int b = *(iter2 + j - 1);
+    if (a > b) {
+      return findKth(iter1, m, iter2 + j, n - j, k - j);
+    }else if (a < b){
+      return findKth(iter1 + i, m - i, iter2, n, k - i);
     }else{
-      return A[i - 1];
+      return a;
     }
   }
 };
 
 int main(){
   Solution s;
-  int A[] = {-1, 1, 3, 6, 6, 7};
-  int B[] = {2,4,9};
-  cout << s.findMedianSortedArrays(A, 6, B, 3) << endl;
+  vector<int> nums1 = {-1, 1, 3, 6, 6, 7};
+  vector<int> nums2 = {2,4,9};
+  cout << s.findMedianSortedArrays(nums1, nums2) << endl;
   return 0;
 }
