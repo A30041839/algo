@@ -5,58 +5,56 @@ using namespace std;
 class Solution {
 public:
   int largestRectangleArea(vector<int> &height) {
-    return largestRectangleArea2(height);
+    return largestRectangleArea1(height);
   }
 
-  int largestRectangleArea2(vector<int>& height) {
-    int res = INT_MIN;
-    if (height.empty()) {
-      return 0;
-    }
+  int largestRectangleArea1(vector<int>& height) {
+    int res = 0;
+    vector<int> width, hgt;
     height.push_back(-1);
-    vector<int> s;
-    vector<int> width;
-    for (int i = 0; i < height.size(); ++i) {
-      int h = height[i];
-      if (s.empty() or h >= s.back()) {
-        s.push_back(h);
+    int n = height.size();
+    for (int i = 0; i < n; ++i) {
+      if (hgt.empty() or height[i] >= hgt.back()) {
+        hgt.push_back(height[i]);
         width.push_back(1);
       }else {
-        int w = 0;
-        int min_h = INT_MAX;
-        while (!s.empty() and h < s.back()) {
-          w += width.back();
-          min_h = min(min_h, s.back());
+        int new_height = 0, new_width = 0;
+        while (!hgt.empty() and hgt.back() >= height[i]) {
+          new_height = hgt.back();
+          new_width += width.back();
+          res = max(res, new_height * new_width);
+          hgt.pop_back();
           width.pop_back();
-          s.pop_back();
-          res = max(res, w * min_h);
         }
-        s.push_back(h);
-        width.push_back(w + 1);
+        new_height = height[i];
+        new_width += 1;
+        hgt.push_back(new_height);
+        width.push_back(new_width);
       }
     }
     return res;
   }
 
-  int largestRectangleArea1(vector<int>& height) {
-    int maxArea = 0;
-    for (int i = 0; i < height.size(); ++i) {
-      if (i < height.size() - 1 and height[i] <= height[i + 1]) {
+  int largestRectangleArea2(vector<int>& height) {
+    int res = 0;
+    int n = height.size();
+    for (int i = 0; i < n; ++i) {
+      if (i < n - 1 and height[i] <= height[i + 1]) {
         continue;
       }
       int min_h = height[i];
       for (int j = i; j >= 0; --j) {
         min_h = min(min_h, height[j]);
-        maxArea = max(maxArea, min_h * (i - j + 1));
+        res = max(res, min_h * (i - j + 1));
       }
     }
-    return maxArea;
+    return res;
   }
 };
 
 int main(){
   Solution s;
-  vector<int> height = {0};
+  vector<int> height = {2,1,5,6,2,3};
   cout << s.largestRectangleArea(height) << endl;
   return 0;
 }
