@@ -13,12 +13,12 @@ public:
 
   int maxProfit1(vector<int>& prices){
     int curmin = prices[0];
-    int maxp = 0;
-    for (int i = 1; i < prices.size(); ++i){
-      maxp = max(maxp, prices[i] - curmin);
+    int res = 0, n = prices.size();
+    for (int i = 1; i < n; ++i){
+      res = max(res, prices[i] - curmin);
       curmin = min(curmin, prices[i]);
     }
-    return maxp;
+    return res;
   }
 };
 

@@ -9,14 +9,16 @@ public:
   }
 
   TreeNode* _buildTree(vector<int>::iterator in_it, vector<int>::iterator post_it, size_t n){
-    if (!n){
+    if (n == 0){
       return nullptr;
     }
-    TreeNode* subroot = new TreeNode(*(post_it + n - 1));
-    vector<int>::iterator pos = find(in_it, in_it + n, *(post_it + n - 1));
-    subroot->left = _buildTree(in_it, post_it, pos - in_it);
-    subroot->right = _buildTree(pos + 1, post_it + (pos - in_it), n - (pos - in_it) - 1);
-    return subroot;
+    TreeNode* node = new TreeNode(*(post_it + n - 1));
+    auto pos = find(in_it, in_it + n, node->val);
+    int left = pos - in_it;
+    int right = n - left - 1;
+    node->left = _buildTree(in_it, post_it, left);
+    node->right = _buildTree(pos + 1, post_it + left, right);
+    return node;
   }
 };
 

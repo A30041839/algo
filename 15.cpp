@@ -4,49 +4,42 @@ using namespace std;
 
 class Solution {
 public:
-  vector<vector<int> > threeSum(vector<int> &num) {
-    vector<vector<int> > res;
-    int len = num.size();
-    if (len < 3) {
-      return res;
+  vector<vector<int> > threeSum(vector<int> &nums) {
+    int n = nums.size();
+    if (n < 3) {
+      return {};
     }
-    sort(num.begin(), num.end());
-    for (int i = 0; i < len - 2; ++i) {
-      if (i == 0 || num[i] > num[i - 1]) {
-        //remove duplicate
-        int x = -1 * num[i];
-        int start = i + 1;
-        int end = len - 1;
-        while (start < end) {
-          if (num[start] + num[end] == x) {
-            vector<int> sol = {num[i], num[start], num[end]};
-            res.push_back(sol);
-            start++;
-            end--;
-            while (start < end and num[start] == num[start - 1]) {
-              start++;
-            }
-            while (start < end and num[end] == num[end + 1]) {
-              end--;
-            }
-          }else if (num[start] + num[end] > x) {
-            end--;
-          }else {
-            start++;
+    sort(nums.begin(), nums.end());
+    vector<vector<int>> res;
+    for (int i = 0; i <= n - 3; ++i) {
+      if (i > 0 and nums[i] == nums[i - 1]) {
+        continue;
+      }
+      int sum = -1 * nums[i];
+      int l = i + 1, r = n - 1;
+      while (l < r) {
+        int cur = nums[l] + nums[r];
+        if (cur == sum) {
+          res.push_back({nums[i], nums[l++], nums[r--]});
+          while (l < r and nums[l] == nums[l - 1]) {
+            l++;
           }
+          while (l < r and nums[r] == nums[r + 1]) {
+            r--;
+          }
+        }else {
+          cur > sum ? r-- : l++;
         }
       }
     }
     return res;
   }
-
 };
 
 int main(){
   Solution s;
-  int A[6] = {-1,0,1,2,-1,-4};
-  vector<int> num(A, A + 6);
-  for (auto& sol : s.threeSum(num)) {
+  vector<int> nums = {-1,0,1,2,-1,-4};
+  for (auto& sol : s.threeSum(nums)) {
     for (int x : sol) {
       cout << x << ",";
     }

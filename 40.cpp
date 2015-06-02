@@ -4,54 +4,65 @@ using namespace std;
 
 class Solution {
 public:
-  vector<vector<int> > combinationSum2(vector<int> &num, int target) {
-    sort(num.begin(), num.end());
-    vector<int> sol;
-    return _combinationSum2(num, sol, 0, 0, target);
+  vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+    return _combinationSum2b(candidates, target);
   }
 
-  vector<vector<int> > _combinationSum2(vector<int> &num, vector<int>& sol,
-                                        int begin, int cursum, int target) {
-    if (cursum == target){
-      return {{sol}};
+  vector<vector<int>> _combinationSum2a(vector<int>& candidates, int target) {
+    vector<int> sol;
+    vector<vector<int>> res;
+    map<int, int> mp;
+    for (int x : candidates) {
+      mp[x]++;
     }
-    vector<vector<int> > res;
-    for (int i = begin; i < num.size() and (cursum + num[i]) <= target; ++i){
-      if (sol.empty() and i > 0 and num[i] == num[i - 1]){
-        continue;
-      }
-      sol.push_back(num[i]);
-      for (auto& v : _combinationSum2(num, sol, i + 1, cursum + num[i], target)) {
-       if (!duplicate(res, v)){
-         res.push_back(v);
-       }
-      }
-      sol.pop_back();
-    }
+    dfs1(mp.begin(), mp.end(), sol, res, target);
     return res;
   }
 
-  bool duplicate(vector<vector<int> >& v1, vector<int>& v2){
-    for (int i = 0; i < v1.size(); ++i){
-      if (v1[i].size() == v2.size()){
-        int k;
-        for (k = 0; k < v2.size(); ++k){
-          if (v1[i][k] != v2[k]){
-            break;
-          }
-        }
-        if (k == v2.size()){
-          return true;
-        }
+  void dfs1(map<int, int>::iterator iter, map<int, int>::iterator end,
+    vector<int>& sol, vector<vector<int>>& res, int remain) {
+    if (remain == 0) {
+      res.push_back(sol);
+      return;
+    }
+    if (iter != end) {
+      for (int i = 0; i <= iter->second and i * iter->first <= remain; ++i) {
+        int tmp = remain - i * iter->first;
+        sol.insert(sol.end(), i, iter->first);
+        dfs1(++iter, end, sol, res, tmp);
+        --iter;
+        sol.erase(sol.end() - i, sol.end());
       }
     }
-    return false;
   }
-};
+
+  vector<vector<int>> _combinationSum2b(vector<int>& candidates, int target) {
+    vector<int> sol;
+    vector<vector<int>> res;
+    sort(candidates.begin(), candidates.end());
+    dfs2(candidates, sol, res, 0, target);
+    return res;
+  }
+
+  void dfs2(vector<int>& candidates, vector<int>& sol, vector<vector<int>>& res,
+    int start, int remain) {
+    if (remain == 0) {
+      res.push_back(sol);
+      return;
+    }
+    for (int i = start; i < candidates.size() and candidates[i] <= remain; ++i) {
+      if (i > start and candidates[i] == candidates[i - 1]) {
+        continue;
+      }
+      sol.push_back(candidates[i]);
+      dfs2(candidates, sol, res, i + 1, remain - candidates[i]);
+      sol.pop_back();
+    }
+  }
+ };
 
 int main(){
   Solution s;
-  //vector<int> candidates = {2,2,2};
   vector<int> candidates = {10,1,2,7,6,1,5};
   vector<vector<int> > res = s.combinationSum2(candidates, 8);
   for (auto& v : res){

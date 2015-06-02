@@ -60,7 +60,7 @@ public:
 
 int main(){
   Solution s;
-  vector<int> v1 = {1,1,2};
+  vector<int> v1 = {1,1};
   vector<vector<int> > res = s.subsetsWithDup(v1);
   for (auto& v2 : res){
     for (auto& i : v2){

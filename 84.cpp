@@ -5,7 +5,7 @@ using namespace std;
 class Solution {
 public:
   int largestRectangleArea(vector<int> &height) {
-    return largestRectangleArea1(height);
+    return largestRectangleArea3(height);
   }
 
   int largestRectangleArea1(vector<int>& height) {
@@ -46,6 +46,23 @@ public:
       for (int j = i; j >= 0; --j) {
         min_h = min(min_h, height[j]);
         res = max(res, min_h * (i - j + 1));
+      }
+    }
+    return res;
+  }
+
+  int largestRectangleArea3(vector<int>& height) {
+    height.push_back(0);
+    int n = height.size(), res = 0;
+    vector<int> s;
+    for (int i = 0; i < n; ++i) {
+      if (s.empty() or height[i] >= height[s.back()]) {
+        s.push_back(i);
+      }else {
+        int h = height[s.back()];
+        s.pop_back();
+        res = max(res, h * (s.empty() ? i : (i - s.back() - 1)));
+        --i;
       }
     }
     return res;

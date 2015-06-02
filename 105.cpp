@@ -13,9 +13,11 @@ public:
       return nullptr;
     }
     TreeNode* node = new TreeNode(*pre_it);
-    vector<int>::iterator pos = find(in_it, in_it + n, *pre_it);
-    node->left = _buildTree(pre_it + 1, in_it, pos - in_it);
-    node->right = _buildTree(pre_it + (pos - in_it) + 1, pos + 1, n - (pos - in_it) - 1);
+    auto pos = find(in_it, in_it + n, *pre_it);
+    int left = pos - in_it;
+    int right = n - left - 1;
+    node->left = _buildTree(pre_it + 1, in_it, left);
+    node->right = _buildTree(pre_it + left + 1, pos + 1, right);
     return node;
   }
 };
