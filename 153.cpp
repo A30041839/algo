@@ -4,17 +4,17 @@ using namespace std;
 
 class Solution {
 public:
-  int findMin(vector<int> &num) {
-    return findMin1(num);
+  int findMin(vector<int> &nums) {
+    return findMin1(nums);
   }
 
-  int findMin1(vector<int>& num){
-    int low = 0, high = num.size() - 1;
+  int findMin1(vector<int>& nums){
+    int low = 0, high = nums.size() - 1;
     while (low <= high){
       int mid = (low + high) / 2;
-      if (num[low] <= num[high]){
-        return num[low];
-      }else if (num[low] > num[mid]){
+      if (nums[low] <= nums[high]){
+        return nums[low];
+      }else if (nums[low] > nums[mid]){
         high = mid;
       }else{
         low = mid + 1;
