@@ -8,53 +8,65 @@ public:
     return fractionToDecimal1(numerator, denominator);
   }
 
+  //reminder: the recurring position doesn't always start from 0
   string fractionToDecimal1(int numerator, int denominator){
     string res;
-    int res_sgn = sgn(numerator) * sgn(denominator);
-    long _numerator = abs((long)numerator);
-    long _denominator = abs((long)denominator);
-    long i = _numerator / _denominator;
-    do {
-      res.push_back(i % 10 + '0');
-      i /= 10;
-    } while (i > 0);
-    if (res_sgn == -1 and _numerator != 0){
-      res.push_back('-');
-    }
-    reverse(res.begin(), res.end());
-    string decimal;
-    unordered_map<long, int> remains;
-    long r = _numerator % _denominator;
-
-    int k = 0;
-    while (r != 0 and remains.count(r) == 0){
-      remains.insert({r, k++});
-      r *= 10;
-      decimal.push_back(r / _denominator + '0');
-      r %= _denominator;
-    }
-    if (!decimal.empty()){
-      res.push_back('.');
-      if (r == 0){
-        res.append(decimal);
-      }else{
-        decimal.insert(remains[r], "(");
-        decimal.push_back(')');
-        res.append(decimal);
-      }
+    int resSgn = sgn(numerator) * sgn(denominator);
+    long numerator1 = abs((long)numerator);
+    long denominator1 = abs((long)denominator);
+    //generate integer part first
+    res = genIntegerPart(numerator1, denominator1, resSgn);
+    //if mod is not zero, generate decimal part
+    if (numerator1 % denominator1) {
+      res.append(genDecimalPart(numerator1 % denominator1, denominator1));
     }
     return res;
   }
 
+private:
   int sgn(int num){
     return num >= 0 ? 1 : -1;
+  }
+
+  string genIntegerPart(long m, long n, int sgn) {
+    string res;
+    long i = m / n;
+    do {
+      res.push_back(i % 10 + '0');
+      i /= 10;
+    } while (i);
+    if (sgn == -1 and m != 0) {
+      res.push_back('-');
+    }
+    reverse(begin(res), end(res));
+    return res;
+  }
+
+  string genDecimalPart(long m, long n) {
+    string res;
+    res.push_back('.');
+    unordered_map<long, int> pos;
+    int k = 1;
+    while (m) {
+      if (pos.find(m) != pos.end()) {
+        res.insert(res.begin() + pos[m], '(');
+        res.push_back(')');
+        break;
+      }else {
+        pos[m] = k++;
+        m *= 10;
+        res.push_back('0' + m / n);
+        m %= n;
+      }
+    }
+    return res;
   }
 };
 
 int main(){
   Solution s;
-  vector<int> numerators = {1, 1};
-  vector<int> denominators = {6, 214748364};
+  vector<int> numerators = {-1, -1, 1, INT_MIN, 0, 2, 1};
+  vector<int> denominators = {-2147483648, 6, 214748364, -1, 10, 2, 2};
   for (int i = 0; i < numerators.size(); ++i){
     cout << s.fractionToDecimal(numerators[i], denominators[i]) << endl;
   }

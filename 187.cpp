@@ -2,12 +2,6 @@
 
 using namespace std;
 
-/*encode
- * A:00
- * T:01
- * G:10
- * C:11
- */
 class Solution {
 public:
   static unordered_map<char, int> codemap;
@@ -17,20 +11,18 @@ public:
   }
 
   vector<string> findRepeatedDnaSequences1(string s) {
-    if (s.size() <= 10) {
+    int n = s.size();
+    if (n <= 10) {
       return {};
     }
-    int code = 0;
-    int mask = 0x000FFFFF;
     vector<string> res;
     unordered_map<int, int> cnt;
-    for (int i = 0; i < s.size(); ++i) {
+    int mask = 0x000FFFFF, code = 0;
+    for (int i = 0; i < n; ++i) {
       code <<= 2;
-      code |= codemap[s[i]];
-      code &= mask;
+      code = (code | codemap[s[i]]) & mask;
       if (i >= 9) {
-        cnt[code]++;
-        if (cnt[code] == 2) {
+        if (++cnt[code] == 2) {
           res.push_back(s.substr(i - 9, 10));
         }
       }
@@ -38,6 +30,7 @@ public:
     return res;
   }
 };
+
 unordered_map<char, int> Solution::codemap = {{'A', 0}, {'T', 1}, {'G', 2}, {'C', 3}};
 
 int main(){

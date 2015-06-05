@@ -14,16 +14,11 @@ public:
     for (auto& str : strs){
       string tmp = str;
       sort(tmp.begin(), tmp.end());
-      if (mp.count(tmp) == 0){
-        mp[tmp] = {};
-      }
       mp[tmp].push_back(str);
     }
     for (auto& p : mp){
       if (p.second.size() > 1){
-        for (auto& s : p.second){
-          res.push_back(s);
-        }
+        res.insert(res.end(), p.second.begin(), p.second.end());
       }
     }
     return res;

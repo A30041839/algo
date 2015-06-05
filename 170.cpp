@@ -12,7 +12,7 @@ public:
     for (auto& pair : mp) {
       int key = pair.first;
       int cnt = pair.second;
-      if ((value != 2 * key) and (mp.count(value - key) > 0)) {
+      if ((value != 2 * key) and (mp.find(value - key) != mp.end())) {
         return true;
       }
       if ((value == 2 * key) and cnt >= 2) {

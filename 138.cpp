@@ -5,30 +5,81 @@ using namespace std;
 class Solution {
 public:
   RandomListNode *copyRandomList(RandomListNode *head) {
-    return copyRandomList1(head);
+    return copyRandomList3(head);
   }
 
   RandomListNode *copyRandomList1(RandomListNode *head) {
-    unordered_map<RandomListNode*, int> mp1;
-    unordered_map<int, RandomListNode*> mp2;
-    
-    RandomListNode dummy(0), *p1 = head, *p2 = &dummy;
-    int k = 0;
-    while (p1){
-      RandomListNode* node_copy = new RandomListNode(p1->label);
-      mp1[p1] = k;
-      mp2[k] = node_copy;
-      p1 = p1->next;
-      p2->next = node_copy;
-      p2 = node_copy;
-      k++;
+    if (head == nullptr) {
+      return nullptr;
     }
-    p1 = head;
-    p2 = dummy.next;
-    while (p1){
-      p2->random = p1->random ? mp2[mp1[p1->random]] : nullptr;
-      p1 = p1->next;
-      p2 = p2->next;
+    unordered_map<RandomListNode*, RandomListNode*> mp;
+    RandomListNode dummy(0), *ptr = head, *cpy = &dummy;
+    while (ptr) {
+      RandomListNode* cpyNode = new RandomListNode(ptr->label);
+      mp[ptr] = cpyNode;
+      cpy->next = cpyNode;
+      ptr = ptr->next;
+      cpy = cpyNode;
+    }
+    ptr = head;
+    while (ptr) {
+      if (ptr->random) {
+        mp[ptr]->random = mp[ptr->random];
+      }
+      ptr = ptr->next;
+    }
+    return dummy.next;
+  }
+
+  //one-pass
+  RandomListNode *copyRandomList2(RandomListNode *head) {
+    if (head == nullptr) {
+      return nullptr;
+    }
+    unordered_map<RandomListNode*, RandomListNode*> mp;
+    RandomListNode dummy(0), *ptr = head, *cpy = &dummy;
+    while (ptr) {
+      if (mp.find(ptr) == mp.end()) {
+        mp[ptr] = new RandomListNode(ptr->label);
+      }
+      cpy->next = mp[ptr];
+      cpy = mp[ptr];
+      if (ptr->random) {
+        if (mp.find(ptr->random) == mp.end()) {
+          mp[ptr->random] = new RandomListNode(ptr->random->label);
+        }
+        cpy->random = mp[ptr->random];
+      }
+      ptr = ptr->next;
+    }
+    return dummy.next;
+  }
+
+  //no extra space used
+  RandomListNode *copyRandomList3(RandomListNode *head) {
+    RandomListNode dummy(0), *ptr = head, *cpy = &dummy;
+    //insert nodes
+    while (ptr) {
+      RandomListNode* new_node = new RandomListNode(ptr->label);
+      new_node->next = ptr->next;
+      ptr->next = new_node;
+      ptr = new_node->next;
+    }
+    //copy random pointers
+    ptr = head;
+    while (ptr) {
+      if (ptr->random) {
+        ptr->next->random = ptr->random->next;
+      }
+      ptr = ptr->next->next;
+    }
+    //decouple two linked lists
+    ptr = head;
+    while (ptr) {
+      cpy->next = ptr->next;
+      cpy = cpy->next;
+      ptr->next = cpy->next;
+      ptr = ptr->next;
     }
     return dummy.next;
   }
