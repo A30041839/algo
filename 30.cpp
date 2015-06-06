@@ -4,27 +4,76 @@ using namespace std;
 
 class Solution {
 public:
-  vector<int> findSubstring(string S, vector<string> &L) {
+  vector<int> findSubstring(string s, vector<string>& words) {
+    return findSubstring2(s, words);
+  }
+
+  //naive method O(n * word_cnt * word_len)
+  vector<int> findSubstring1(string s, vector<string>& words) {
+    int word_len = words[0].size(), word_cnt = words.size(), n = s.size();
+    vector<int> res;
     unordered_map<string, int> dic;
-    int len = L[0].length(), cnt = L.size();
-    for (string word : L){
+    for (auto& word : words) {
       dic[word]++;
     }
-    vector<int> res;
-    for (int i = 0; i <= (int)S.length() - cnt * len; i++){
-      unordered_map<string, int> tmp;
-      int k;
-      for (k = 0; k < cnt; ++k){
-        string str = S.substr(k * len + i, len);
-        if (dic.count(str) > 0 and tmp[str] < dic[str]){
-          tmp[str]++;
-        }else{
+    for (int i = 0; i <= n - word_len * word_cnt; ++i) {
+      unordered_map<string, int> mp;
+      bool f = true;
+      for (int k = 0; k < word_cnt; k++) {
+        string str = s.substr(i + k * word_len, word_len);
+        if (dic.count(str) and mp[str] < dic[str]) {
+          mp[str]++;
+        }else {
+          f = false;
           break;
         }
       }
-      if (k == cnt){
+      if (f) {
         res.push_back(i);
       }
+    }
+    return res;
+  }
+
+  //slide window: O(n * word_len)
+  vector<int> findSubstring2(string s, vector<string>& words) {
+    int n = s.size(), word_len = words[0].size();
+    int i = 0, counter = 0, window_beg, window_end, word_cnt = words.size();
+    unordered_map<string ,int> dic;
+    unordered_map<string, int> mp;
+    vector<int> res;
+    for (string& word : words) {
+      dic[word]++;
+    }
+    while (i < word_len) {
+      window_beg = i;
+      counter = 0;
+      mp.clear();
+      for (window_end = i; window_end <= n - word_len; window_end += word_len) {
+        string str = s.substr(window_end, word_len);
+        if (dic.find(str) != dic.end()) {
+          if (mp[str] < dic[str]) {
+            mp[str]++;
+            counter++;
+          }else {
+            //set windows begin to the end of first occurence of current word
+            while (s.substr(window_beg, word_len) != str) {
+              mp[s.substr(window_beg, word_len)]--;
+              counter--;
+              window_beg += word_len;
+            }
+            window_beg += word_len;
+          }
+        } else {
+          mp.clear();
+          counter = 0;
+          window_beg = window_end + word_len;
+        }
+        if (counter == word_cnt) {
+          res.push_back(window_beg);
+        }
+      }
+      i++;
     }
     return res;
   }
@@ -32,8 +81,8 @@ public:
 
 int main(){
   Solution s;
-  string str("aaa");
-  vector<string> L = {"a","a"};
+  string str("barfoothefoobarman");
+  vector<string> L = {"foo","bar"};
   vector<int> res = s.findSubstring(str, L);
   for (int i = 0; i < res.size(); ++i){
     cout << res[i] << ",";

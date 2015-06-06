@@ -5,56 +5,74 @@ using namespace std;
 class Solution {
 public:
   void solveSudoku(vector<vector<char> > &board) {
-    vector<unordered_set<char> > row(9, unordered_set<char>());
-    vector<unordered_set<char> > col(9, unordered_set<char>());
-    vector<unordered_set<char> > v(9, unordered_set<char>());
-    init(board, row, col, v);
-    solveSudoku1(board, row, col, v, 0);
+    if (board.empty() or board[0].empty()) {
+      return;
+    }
+    init(board);
+    solveSudoku1(board, empty, 0);
   }
 
-  void init(vector<vector<char> >& board, vector<unordered_set<char> >& row,
-            vector<unordered_set<char> >& col, vector<unordered_set<char> >& v){
-    for (int i = 0; i < 9; ++i){
-      for (int j = 0; j < 9; ++j){
-        char c = board[i][j];
-        if (c != '.'){
-          row[i].insert(c);
-          col[j].insert(c);
-          v[i / 3 * 3 + j / 3].insert(c);
+private:
+  void init(vector<vector<char>>& board) {
+    row.assign(N, 0);
+    col.assign(N, 0);
+    block.assign(N, 0);
+    for (int i = 0; i < N; ++i) {
+      for (int j = 0; j < N; ++j) {
+        if (board[i][j] != '.') {
+          int mask = 1 << (board[i][j] - '1');
+          row[i] |= mask;
+          col[j] |= mask;
+          block[i / 3 * 3 + j / 3] |= mask;
+        }else {
+          empty.push_back(make_pair(i, j));
         }
       }
     }
   }
 
-  bool solveSudoku1(vector<vector<char> >& board, vector<unordered_set<char> >& row,
-                    vector<unordered_set<char> >& col, vector<unordered_set<char> >& v, int pos){
-    while (pos < 81 and board[pos / 9][pos % 9] != '.'){
-      pos++;
-    }
-    if (pos == 81){
+  bool solveSudoku1(vector<vector<char>>& board, vector<pair<int, int>>& empty,
+    int pos) {
+    if (pos == empty.size()) {
       return true;
     }
-    int i = pos / 9;
-    int j = pos % 9;
-    for (int k = 1; k <= 9; ++k){
-      char c = k + '0';
-      if (!row[i].count(c) and !col[j].count(c) and !v[i / 3 * 3 + j / 3].count(c)){
-        board[i][j] = c;
-        row[i].insert(c);
-        col[j].insert(c);
-        v[i / 3 * 3 + j / 3].insert(c);
-        if (solveSudoku1(board, row, col, v, pos + 1)){
+    int curx = empty[pos].first, cury = empty[pos].second;
+    for (int i = 1; i <= N; ++i) {
+      if (check(curx, cury, i)) {
+        board[curx][cury] = '0' + i;
+        if (solveSudoku1(board, empty, pos + 1)){
           return true;
-        }else{
-          board[i][j] = '.';
-          row[i].erase(c);
-          col[j].erase(c);
-          v[i / 3 * 3 + j / 3].erase(c);
+        }else {
+          board[curx][cury] = '.';
+          clear(curx, cury, i);
         }
       }
     }
     return false;
   }
+
+  bool check(int x, int y, int num) {
+    int mask = 1 << (num - 1);
+    if (row[x] & mask or col[y] & mask or block[x / 3 * 3 + y / 3] & mask) {
+      return false;
+    }else {
+      row[x] |= mask;
+      col[y] |= mask;
+      block[x / 3 * 3 + y / 3] |= mask;
+      return true;
+    }
+  }
+
+  void clear(int x, int y, int num) {
+    int mask = 1 << (num - 1);
+    row[x] ^= mask;
+    col[y] ^= mask;
+    block[x / 3 * 3 + y / 3] ^= mask;
+  }
+
+  static const int N = 9;
+  vector<int> row, col, block;
+  vector<pair<int, int>> empty;
 };
 
 int main(){

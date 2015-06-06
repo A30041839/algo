@@ -6,16 +6,13 @@ class Solution {
 public:
   vector<int> inorderTraversal(TreeNode *root) {
     vector<int> res;
-    if (!root){
-      return res;
-    }
     stack<TreeNode*> stk;
     TreeNode* p = root;
-    while (p or !stk.empty()){
-      if (p){
+    while (p or !stk.empty()) {
+      if (p) {
         stk.push(p);
         p = p->left;
-      }else{
+      }else {
         p = stk.top();
         stk.pop();
         res.push_back(p->val);
