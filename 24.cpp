@@ -5,16 +5,30 @@ using namespace std;
 class Solution {
 public:
   ListNode *swapPairs(ListNode *head) {
-    ListNode dummy(0), *ptr, *prev = &dummy;
+    return swapPairs1(head);
+  }
+
+  //recursive
+  ListNode *swapPairs1(ListNode *ptr) {
+    if (!ptr or !ptr->next) {
+      return ptr;
+    }
+    auto tmp = ptr->next;
+    ptr->next = swapPairs1(tmp->next);
+    tmp->next = ptr;
+    return tmp;
+  }
+
+  //iterative
+  ListNode *swapPairs2(ListNode *head) {
+    ListNode dummy(0), *ptr = head, *prev = &dummy;
     dummy.next = head;
-    ptr = dummy.next;
-    while (ptr and ptr->next){
+    while (ptr and ptr->next) {
       prev->next = ptr->next;
-      ListNode* tmp = ptr->next->next;
-      ptr->next->next = ptr;
-      ptr->next = tmp;
+      ptr->next= ptr->next->next;
+      prev->next->next = ptr;
       prev = ptr;
-      ptr = tmp;
+      ptr = ptr->next;
     }
     return dummy.next;
   }

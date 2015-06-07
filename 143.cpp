@@ -5,32 +5,39 @@ using namespace std;
 class Solution {
 public:
   void reorderList(ListNode *head) {
-    ListNode dummy(0), *p1 = &dummy, *p2 = &dummy;
-    dummy.next = head;
-    while (p2 and p2->next){
-      p1 = p1->next;
-      p2 = p2->next->next;
+    reorderList1(head);
+  }
+
+  void reorderList1(ListNode *head) {
+    //find the middle node
+    ListNode dummy(0), *p1 = head, *p2 = head, *tmp;
+    if (!head or !head->next) {
+      return;
     }
-    ListNode* p3 = nullptr, *p4 = p1->next;
-    p1->next = nullptr;
-    while (p4){
-      ListNode* tmp = p4->next;
-      p4->next = p3;
-      p3 = p4;
-      p4 = tmp;
+    while (p1 and p1->next) {
+      tmp = p2;
+      p2 = p2->next;
+      p1 = p1->next->next;
     }
-    p1 = dummy.next;
-    p2 = p3;
-    p3 = &dummy;
-    int k = 0;
-    while (p1 and p2){
-      ListNode*& p = k == 0 ? p1 : p2;
-      p3->next = p;
-      p = p->next;
-      p3 = p3->next;
-      k = 1 - k;
+    tmp->next = nullptr;
+    //reverse the second half
+    while (p2) {
+      tmp = p2->next;
+      p2->next = dummy.next;
+      dummy.next = p2;
+      p2 = tmp;
     }
-    p3->next = p1 ? p1 : p2;
+    //interveave the two halves
+    p1 = head;
+    while (p1) {
+      p2 = dummy.next;
+      dummy.next = p2->next;
+      tmp = p1->next;
+      p1->next = p2;
+      p2->next = tmp;
+      p1 = tmp;
+    }
+    p2->next = dummy.next;
   }
 };
 
@@ -41,10 +48,10 @@ int main(){
   ListNode* node2 = new ListNode(3);
   ListNode* node3 = new ListNode(4);
   ListNode* node4 = new ListNode(5);
-  //head->next = node1;
-  //node1->next = node2;
-  //node2->next = node3;
-  //node3->next = node4;
+  head->next = node1;
+  node1->next = node2;
+  node2->next = node3;
+  node3->next = node4;
   s.reorderList(head);
   while (head){
     cout << head->val << ",";

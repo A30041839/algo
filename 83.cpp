@@ -5,14 +5,14 @@ using namespace std;
 class Solution {
 public:
   ListNode *deleteDuplicates(ListNode *head) {
-    ListNode* p = head;
-    while (p != NULL and p->next != NULL){
-      if (p->val == p->next->val){
-        ListNode* tmp = p->next;
-        p->next = tmp->next;
+    ListNode* ptr = head, *tmp;
+    while (ptr and ptr->next){
+      if (ptr->val == ptr->next->val){
+        tmp = ptr->next;
+        ptr->next = tmp->next;
         delete tmp;
       }else{
-        p = p->next;
+        ptr = ptr->next;
       }
     }
     return head;

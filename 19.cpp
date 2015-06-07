@@ -4,28 +4,22 @@ using namespace std;
 
 class Solution {
 public:
+  //one pass
   ListNode *removeNthFromEnd(ListNode *head, int n) {
-    ListNode* fast = head;
-    ListNode* slow = head;
-    while (fast->next != NULL){
-      if (n != 0){
-        fast = fast->next;
+    ListNode dummy(0), *slow = &dummy, *fast = head;
+    dummy.next = head;
+    while (fast) {
+      if (n > 0) {
         n--;
-      }else{
-        fast = fast->next;
+      }else {
         slow = slow->next;
       }
+      fast = fast->next;
     }
-    if (n > 0){
-      ListNode* tmp = head;
-      head = head->next;
-      delete tmp;
-    }else{
-      ListNode* tmp = slow->next;
-      slow->next = tmp->next;
-      delete tmp;
-    }
-    return head;
+    auto tmp = slow->next;
+    slow->next = tmp->next;
+    delete tmp;
+    return dummy.next;
   }
 };
 
@@ -41,7 +35,7 @@ int main(){
   node3->next = node4;
 
   Solution s;
-  head = s.removeNthFromEnd(head, 2);
+  head = s.removeNthFromEnd(head, 1);
   while (head){
     cout << head->val << ",";
     head = head->next;
