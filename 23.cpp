@@ -4,40 +4,38 @@ using namespace std;
 
 class Solution {
 public:
-  struct cmp{
-    bool operator()(const ListNode* node1, const ListNode* node2) const{
-      return node1->val > node2->val;
-    }
-  };
-
   ListNode *mergeKLists(vector<ListNode *> &lists) {
     if (lists.empty()) {
-      return NULL;
+      return nullptr;
     }
-    return mergeKLists2(lists, 0, lists.size() - 1);
+    //return mergeKLists2(lists, 0, lists.size() - 1);
+    return mergeKLists1(lists);
   }
 
+  //k is number of lists, m is average list size, then time complexity is:
+  //O(log(k)*km)
   ListNode* mergeKLists1(vector<ListNode*>& lists) {
-    priority_queue<ListNode*,  vector<ListNode*>, cmp> p_q;
+    auto cmp = [](const ListNode * p, const ListNode * q) { return p->val > q->val; };
+    priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)> pq(cmp);
     ListNode dummy(0), *p = &dummy;
-    for (int i = 0; i < lists.size(); ++i) {
-      if (lists[i] != NULL) {
-        p_q.push(lists[i]);
+    for (auto ptr : lists) {
+      if (ptr) {
+        pq.push(ptr);
       }
     }
-    while (!p_q.empty()) {
-      ListNode* top = p_q.top();
-      p_q.pop();
-      p->next = new ListNode(top->val);
-      p = p->next;
-      if (top->next) {
-        p_q.push(top->next);
+    while (!pq.empty()) {
+      ListNode* curmin = pq.top();
+      pq.pop();
+      if (curmin->next) {
+        pq.push(curmin->next);
       }
+      p->next = curmin;
+      p = curmin;
     }
     return dummy.next;
   }
 
-  ListNode* merge2Lists(ListNode* l1, ListNode* l2) {
+  ListNode* merge(ListNode* l1, ListNode* l2) {
     ListNode dummy(0), *cur = &dummy;
     while (l1 and l2) {
       ListNode*& min_ptr = l1->val < l2->val ? l1 : l2;
@@ -49,14 +47,16 @@ public:
     return dummy.next;
   }
 
+  //k is number of lists, m is average list size, then time complexity is
+  //O(log(k)*km)
   ListNode *mergeKLists2(vector<ListNode *> &lists, int low, int high) {
     if (low == high) {
       return lists[low];
     }
-    int mid = (low + high) / 2;
+    int mid = (low + high) >> 1;
     ListNode* l1 = mergeKLists2(lists, low, mid);
     ListNode* l2 = mergeKLists2(lists, mid + 1, high);
-    return merge2Lists(l1, l2);
+    return merge(l1, l2);
   }
 };
 

@@ -5,36 +5,46 @@ using namespace std;
 class Solution {
 public:
   ListNode *reverseKGroup(ListNode *head, int k) {
-    ListNode dummy(0), *p1 = head, *p2 = nullptr, *p3 = &dummy;
+    if (!head or k <= 1) {
+      return head;
+    }else {
+      return reverseKGroup1(head, k);
+    }
+  }
+
+  ListNode *reverseKGroup1(ListNode *head, int k) {
+    ListNode dummy(0), *ptr = &dummy, *next;
     dummy.next = head;
-    while (true){
-      ListNode* s = p3->next;
-      int i;
-      for (i = 0; i < k && p1; ++i){
-        ListNode* tmp = p1->next;
-        p1->next = p2;
-        p2 = p1;
-        p1 = tmp;
-      }
-      if (i != k){
-        while (p2 != s) {
-          ListNode* tmp = p2->next;
-          p2->next = p1;
-          p1 = p2;
-          p2 = tmp;
-        }
-        if (s){
-          s->next = p1;
-        }
+    int res;
+    while (true) {
+      next = ptr->next;
+      res = reverseHelper(ptr, k);
+      if (res == 0) {
         break;
-      }else{
-        p3->next = p2;
-        s->next = p1;
-        p3 = s;
-        p2 = nullptr;
+      }else if (res < k - 1) {
+        reverseHelper(ptr, res + 1);
+        break;
       }
+      ptr = next;
     }
     return dummy.next;
+  }
+
+private:
+  int reverseHelper(ListNode* head, int k) {
+    if (!head->next) {
+      return 0;
+    }
+    ListNode *ptr = head->next, *move;
+    int i = 0;
+    while (i < k - 1 and ptr->next) {
+      move = ptr->next;
+      ptr->next = move->next;
+      move->next = head->next;
+      head->next = move;
+      i++;
+    }
+    return i;
   }
 };
 
@@ -49,7 +59,7 @@ int main(){
   node1->next = node2;
   node2->next = node3;
   node3->next = node4;
-  ListNode* res = s.reverseKGroup(head, 5);
+  ListNode* res = s.reverseKGroup(head, 3);
   while (res){
     cout << res->val << ",";
     res = res->next;

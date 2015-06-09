@@ -5,25 +5,20 @@ using namespace std;
 class Solution {
 public:
   ListNode *detectCycle(ListNode *head) {
-    if (!head){
-      return NULL;
-    }
-    ListNode dummy(0), *p_fast = &dummy, *p_slow = &dummy;
-    dummy.next = head;
+    ListNode *slow = head, *fast = head;
     bool f = false;
-    while (p_fast and p_fast->next){
-      p_fast = f ? p_fast->next : p_fast->next->next;
-      p_slow = p_slow->next;
-      if (p_fast == p_slow){
-        if (f){
-          return p_fast;
-        }else{
-          f = true;
-          p_slow = &dummy;
-        }
+    while (fast and fast->next) {
+      if (slow == fast and f) {
+        return slow;
+      }
+      fast = f ? fast->next : fast->next->next;
+      slow = slow->next;
+      if (slow == fast and !f) {
+        f = true;
+        fast = head;
       }
     }
-    return NULL;
+    return nullptr;
   }
 };
 

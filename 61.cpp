@@ -5,30 +5,60 @@ using namespace std;
 class Solution {
 public:
   ListNode *rotateRight(ListNode *head, int k) {
-    ListNode dummy(0), *p1 = &dummy, *p2 = &dummy;
-    dummy.next = head;
-    if (head == 0){
-      return 0;
+    return rotateRight1(head, k);
+  }
+
+  ListNode *rotateRight1(ListNode *head, int k) {
+    if (!head) {
+      return nullptr;
     }
-    int len = 0;
-    while (p1->next){
+    ListNode* ptr = head;
+    int len = 1;
+    while (ptr->next) {
       len++;
-      p1 = p1->next;
+      ptr = ptr->next;
     }
     k %= len;
-    if (k == 0){
+    if (!k) {
       return head;
     }
-    p1 = &dummy;
-    while (p2->next){
-      p1 = k == 0 ? p1->next : p1;
-      k = k > 0 ? k - 1 : 0;
-      p2 = p2->next;
+    //connect the tail node with the head node
+    ptr->next = head;
+    while (len - k > 0) {
+      ptr = ptr->next;
+      k++;
     }
-    dummy.next = p1->next;
-    p2->next = head;
-    p1->next = 0;
-    return dummy.next;
+    head = ptr->next;
+    ptr->next = nullptr;
+    return head;
+  }
+
+  ListNode *rotateRight2(ListNode *head, int k) {
+    if (!head) {
+      return nullptr;
+    }
+    ListNode* ptr = head, *tail;
+    int len = 0;
+    while (ptr) {
+      len++;
+      tail = ptr;
+      ptr = ptr->next;
+    }
+    k %= len;
+    if (!k) {
+      return head;
+    }
+    ptr = head;
+    k = len - k;
+    while (k > 1) {
+      ptr = ptr->next;
+      k--;
+    }
+    auto tmp = head;
+    head = ptr->next;
+    ptr->next = nullptr;
+    tail->next = tmp;
+    return head;
   }
 };
 
@@ -43,7 +73,7 @@ int main(){
   node1->next = node2;
   node2->next = node3;
   node3->next = node4;
-  ListNode* res = s.rotateRight(head, 5);
+  ListNode* res = s.rotateRight(head, 2);
   while (res){
     cout << res->val << ",";
     res = res->next;

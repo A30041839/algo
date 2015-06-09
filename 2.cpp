@@ -4,27 +4,18 @@ using namespace std;
 class Solution {
 public:
   ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-    if (l1 == NULL){
-      return l2;
-    }
-    if (l2 == NULL){
-      return l1;
-    }
     ListNode dummy(0), *p = &dummy;
-    int carry = 0;
-    while (l1 or l2){
-      int c1 = l1 ? l1->val : 0;
-      int c2 = l2 ? l2->val : 0;
-      int k = c1 + c2 + carry;
-      carry = k >= 10 ? 1 : 0;
-      k %= 10;
-      p->next = new ListNode(k);
+    int carry = 0, c1, c2, sum;
+    while (l1 or l2 or carry){
+      c1 = l1 ? l1->val : 0;
+      c2 = l2 ? l2->val : 0;
+      sum = c1 + c2 + carry;
+      carry = sum / 10;
+      sum %= 10;
+      p->next = new ListNode(sum);
       p = p->next;
-      l1 = l1 ? l1->next : 0;
-      l2 = l2 ? l2->next : 0;
-    }
-    if (carry){
-      p->next = new ListNode(1);
+      l1 = l1 ? l1->next : nullptr;
+      l2 = l2 ? l2->next : nullptr;
     }
     return dummy.next;
   }

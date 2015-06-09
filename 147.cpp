@@ -3,32 +3,54 @@
 using namespace std;
 
 class Solution {
+private:
+  void insert(ListNode* head, ListNode* ptr) {
+    while (head->next and head->next->val < ptr->val) {
+      head = head->next;
+    }
+    ptr->next = head->next;
+    head->next = ptr;
+  }
+
 public:
   ListNode *insertionSortList(ListNode *head) {
-    if (!head){
-      return NULL;
+    return insertionSortList1(head);
+  }
+
+  ListNode *insertionSortList1(ListNode *head) {
+    ListNode dummy(0), *cur = head, *tmp;
+    while (cur) {
+      tmp = cur->next;
+      insert(&dummy, cur);
+      cur = tmp;
     }
-    ListNode dummy(0), *p = head, *prev = &dummy;
+    return dummy.next;
+  }
+
+  ListNode *insertionSortList2(ListNode *head) {
+    if (!head or !head->next) {
+      return head;
+    }
+    ListNode dummy(0), *cur = head, *ptr, *prev, *tmp;
     dummy.next = head;
-    ListNode* last = 0;
-    while (p){
-      ListNode *max_node = p, *max_prev = prev;
-      while (p){
-        if (p->val > max_node->val){
-          max_node = p;
-          max_prev = prev;
+    while (cur->next) {
+      prev = &dummy;
+      ptr = dummy.next;
+      while (ptr != cur->next) {
+        if (ptr->val > cur->next->val) {
+          break;
         }
-        prev = p;
-        p = p->next;
+        prev = ptr;
+        ptr = ptr->next;
       }
-      if (!last){
-        last = max_node;
+      if (ptr != cur->next) {
+        prev->next = cur->next;
+        tmp = cur->next->next;
+        cur->next->next = ptr;
+        cur->next = tmp;
+      }else {
+        cur = cur->next;
       }
-      max_prev->next = max_node->next;
-      max_node->next = dummy.next;
-      p = last->next;
-      dummy.next = max_node;
-      prev = last;
     }
     return dummy.next;
   }
@@ -41,10 +63,10 @@ int main(){
   ListNode* node2 = new ListNode(3);
   ListNode* node3 = new ListNode(2);
   ListNode* node4 = new ListNode(1);
-  //head->next = node1;
-  //node1->next = node2;
-  //node2->next = node3;
-  //node3->next = node4;
+  head->next = node1;
+  node1->next = node2;
+  node2->next = node3;
+  node3->next = node4;
   ListNode* res = s.insertionSortList(head);
   while (res){
     cout << res->val << ",";

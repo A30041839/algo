@@ -5,87 +5,88 @@ using namespace std;
 class Solution {
 public:
   ListNode *sortList(ListNode *head) {
-    if (!head){
-      return nullptr;
+    if (!head or !head->next) {
+      return head;
     }
-    ListNode* last = head;
-    while (last and last->next){
-      last = last->next;
+    /*int n = 0;
+    ListNode* ptr = head;
+    while (ptr) {
+      n++;
+      ptr = ptr->next;
     }
-    return merge_sort(head, last);
+    return merge_sort(head, 0, n - 1);*/
+    return bottom_up_merge_sort(head);
   }
 
-  ListNode* merge_sort(ListNode* first, ListNode* last){
-    if (first == nullptr){
-      return nullptr;
+  //average and bad case time complexity is always O(nlogn)
+  //recursive function not constant space
+  ListNode* merge_sort(ListNode*& cur, int beg, int end){
+    if (beg == end) {
+      ListNode* ret = cur;
+      cur = cur->next;
+      ret->next = nullptr;
+      return ret;
     }
-    if (first == last){
-      first->next = nullptr;
-      return first;
-    }
-    ListNode* mid = findMid(first, last);
-    ListNode* tmp = mid->next;
-    ListNode* l = merge_sort(first, mid);
-    ListNode* r = merge_sort(tmp, last);
+    int med = (beg + end) / 2;
+    ListNode* l = merge_sort(cur, beg, med);
+    ListNode* r = merge_sort(cur, med + 1, end);
     return merge(l, r);
   }
 
   ListNode* merge(ListNode* p1, ListNode* p2){
     ListNode dummy(0), *cur = &dummy;
-    while (p1 and p2){
+    while (p1 and p2) {
       ListNode*& pMin = p1->val < p2->val ? p1 : p2;
       cur->next = pMin;
+      cur = pMin;
       pMin = pMin->next;
-      cur = cur->next;
     }
     cur->next = p1 ? p1 : p2;
     return dummy.next;
   }
 
-  ListNode* findMid(ListNode* first, ListNode* last){
-    ListNode *slow = first, *fast = first;
-    while (fast != last and fast->next != last){
-      slow = slow->next;
-      fast = fast->next->next;
-    }
-    return slow;
+
+  //bottom-up merge sort, iterative process, constant space complexity
+  ListNode* bottom_up_merge_sort(ListNode* head) {
   }
 
+  //quick sort will cause TLE, O(n^2) bad case complexity
+  //the last pointer is the next position of the last element!!
+  //recursive function not constant space
   void quick_sort(ListNode* first, ListNode* last){
-    /*quick sort will cause TLE, O(n2) bad case complexity*/
-    if (first != last){
-      ListNode* pos = partition(first, last);
-      quick_sort(first, pos);
-      quick_sort(pos->next, last);
+    if (first == last or first->next == last) {
+      return;
     }
+    ListNode* pos = partition(first, last);
+    quick_sort(first, pos);
+    quick_sort(pos->next, last);
   }
 
   ListNode* partition(ListNode* first, ListNode* last){
-    ListNode *i = first, *j = first->next;
-    while (j != last){
-      if (j->val <= first->val){
-        i = i->next;
-        swap(i->val, j->val);
+    ListNode *p = first, *q = first->next;
+    while (q != last) {
+      if (q->val < first->val) {
+        p = p->next;
+        swap(p->val, q->val);
       }
-      j = j->next;
+      q = q->next;
     }
-    swap(i->val, first->val);
-    return i;
+    swap(p->val, first->val);
+    return p;
   }
 };
 
 int main(){
-  ListNode* head = new ListNode(3);
-  ListNode* node1 = new ListNode(1);
-  ListNode* node2 = new ListNode(6);
-  ListNode* node3 = new ListNode(2);
-  ListNode* node4 = new ListNode(7);
-  //head->next = node1;
-  //node1->next = node2;
-  //node2->next = node3;
-  //node3->next = node4;
-
   Solution s;
+  ListNode* head = new ListNode(3);
+  ListNode* node1 = new ListNode(4);
+  ListNode* node2 = new ListNode(1);
+  ListNode* node3 = new ListNode(2);
+  ListNode* node4 = new ListNode(-1);
+  head->next = node1;
+  node1->next = node2;
+  node2->next = node3;
+  node3->next = node4;
   head = s.sortList(head);
   while (head){
     cout << head->val << ",";

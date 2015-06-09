@@ -5,18 +5,19 @@ using namespace std;
 class Solution {
 public:
   ListNode *partition(ListNode *head, int x) {
-    if (head == 0){
-      return head;
+    return partition1(head, x);
+  }
+
+  ListNode *partition1(ListNode *head, int x) {
+    ListNode dummy1(0), dummy2(0), *ptr1 = &dummy1, *ptr2 = &dummy2, *ptr = head;
+    while (ptr) {
+      ListNode*& pInsert = ptr->val < x ? ptr1 : ptr2;
+      pInsert->next = ptr;
+      pInsert = ptr;
+      ptr = ptr->next;
     }
-    ListNode dummy1(0), dummy2(0), *p1 = &dummy1, *p2 = &dummy2;
-    while (head){
-      ListNode*& p = head->val < x ? p1 : p2;
-      p->next = head;
-      p = p->next;
-      head = head->next;
-    }
-    p2->next = 0;
-    p1->next = dummy2.next;
+    ptr1->next = dummy2.next;
+    ptr2->next = nullptr;
     return dummy1.next;
   }
 };
@@ -34,7 +35,7 @@ int main(){
   node2->next = node3;
   node3->next = node4;
   node4->next = node5;
-  ListNode* res = s.partition(head, -6);
+  ListNode* res = s.partition(head, 3);
   while (res){
     cout << res->val << ",";
     res = res->next;
