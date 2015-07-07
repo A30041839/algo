@@ -2,46 +2,37 @@
 
 using namespace std;
 
-int _plus(int& a, int& b){
-  return a + b;
-}
-
-int _minus(int& a, int& b){
-  return a - b;
-}
-
-int _multiply(int& a, int& b){
-  return a * b;
-}
-
-int _divide(int& a, int& b){
-  return a / b;
-}
-
 class Solution {
+private:
+  int calc(int lhs, int rhs, string op) {
+    if (op == "+") {
+      return lhs + rhs;
+    }else if (op == "-") {
+      return lhs - rhs;
+    }else if (op == "*") {
+      return lhs * rhs;
+    }else {
+      return lhs / rhs;
+    }
+  }
+
 public:
   int evalRPN(vector<string> &tokens) {
-    stack<int> operands;
-    typedef int (*fp) (int&, int&);
-    unordered_map<string, fp> fmap;
-    fmap.insert({"+", _plus});
-    fmap.insert({"-", _minus});
-    fmap.insert({"*", _multiply});
-    fmap.insert({"/", _divide});
-
-    for (int i = 0; i < tokens.size(); ++i){
-      string token = tokens[i];
-      if (fmap.count(token) > 0){
-        int a = operands.top();
-        operands.pop();
-        int b = operands.top();
-        operands.pop();
-        operands.push(fmap[token](b, a));
-      }else{
-        operands.push(atoi(token.c_str()));
+    stack<int> operand;
+    int n = tokens.size();
+    for (int i = 0; i < n; ++i) {
+      string tok = tokens[i];
+      if (tok == "+" or tok == "-" or tok == "*" or tok == "/") {
+        int rhs = operand.top();
+        operand.pop();
+        int lhs = operand.top();
+        operand.pop();
+        operand.push(calc(lhs, rhs, tok));
+      }else {
+        operand.push(atoi(tok.c_str()));
       }
     }
-    return operands.top();
+    return operand.top();
   }
 };
 

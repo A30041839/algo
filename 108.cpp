@@ -4,22 +4,19 @@ using namespace std;
 
 class Solution {
 public:
-  TreeNode *sortedArrayToBST(vector<int> &num) {
-    if (!num.size()){
-      return nullptr;
-    }
-    return sortedArrayToBST1(num, 0, num.size() - 1);
+  TreeNode* sortedArrayToBST(vector<int>& nums) {
+    return dfs(nums, 0, nums.size() - 1);
   }
-  TreeNode* sortedArrayToBST1(vector<int>& num, int low, int high){
-    if (low <= high){
-      int mid = (low + high) / 2;
-      TreeNode* node = new TreeNode(num[mid]);
-      node->left = sortedArrayToBST1(num, low, mid - 1);
-      node->right = sortedArrayToBST1(num, mid + 1, high);
-      return node;
-    }else{
+
+  TreeNode* dfs(vector<int>& nums, int beg, int end) {
+    if (beg > end) {
       return nullptr;
     }
+    int mid = beg + (end - beg) / 2;
+    TreeNode* subroot = new TreeNode(nums[mid]);
+    subroot->left = dfs(nums, beg, mid - 1);
+    subroot->right = dfs(nums, mid + 1, end);
+    return subroot;
   }
 };
 

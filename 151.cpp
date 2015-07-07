@@ -2,54 +2,45 @@
 
 using namespace std;
 
-class Solution1 {
+class Solution {
 public:
   void reverseWords(string &s) {
-    istringstream iss(s);
-    string word;
+    reverseWords2(s);
+  }
+
+  //O(n) space
+  void reverseWords1(string &s) {
     vector<string> words;
-    while (iss >> word){
-      words.push_back(word);
-    }
+    istringstream iss(s);
     ostringstream oss;
-    for (int i = words.size() - 1; i >= 0; --i){
+    string str;
+    while (iss >> str) {
+      words.push_back(str);
+    }
+    for (int i = words.size() - 1; i >= 0; --i) {
       oss << words[i];
-      if (i != 0){
+      if (i > 0) {
         oss << " ";
       }
     }
     s = oss.str();
   }
-};
 
-class Solution {
-public:
-  void reverseWords(string &s) {
+  void reverseWords2(string &s) {
     string res;
-    string str;
-    for (int i = s.length() - 1; i >= 0; --i){
-      if (s[i] != ' '){
-        if (!str.empty() and s[i + 1] == ' '){
-          reverse(str.begin(), str.end());
-          if (res.empty()){
-            res.append(str);
-          }else{
-            res.push_back(' ');
-            res.append(str);
-          }
-          str.clear();
+    for (int i = s.size() - 1; i >= 0; --i) {
+      if (s[i] != ' ') {
+        int j = i - 1;
+        while (j >= 0 and s[j] != ' ') {
+          j--;
         }
-        str.push_back(s[i]);
+        res.append(s.begin() + j + 1, s.begin() + i + 1);
+        res.push_back(' ');
+        i = j;
       }
     }
-    if (!str.empty()){
-      reverse(str.begin(), str.end());
-      if (res.empty()){
-        res = str;
-      }else{
-        res.push_back(' ');
-        res.append(str);
-      }
+    if (!res.empty()) {
+      res.pop_back();
     }
     s = res;
   }

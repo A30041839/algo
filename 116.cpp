@@ -5,32 +5,80 @@ using namespace std;
 class Solution {
 public:
   void connect(TreeLinkNode *root) {
+    return connect4(root);
   }
 
   void connect1(TreeLinkNode *root) {
-    if (!root){
-      return;
-    }
     queue<TreeLinkNode*> q;
     q.push(root);
-    while (!q.empty()){
+    while (!q.empty()) {
+      int n = q.size();
       TreeLinkNode* prev = nullptr;
-      int last = q.size();
-      for (int i = 0; i < last; ++i){
+      while (n--) {
         TreeLinkNode* cur = q.front();
         q.pop();
-        if (cur->left){
+        if (cur) {
+          if (prev) {
+            prev->next = cur;
+          }
+          prev = cur;
           q.push(cur->left);
-        }
-        if (cur->right){
           q.push(cur->right);
         }
-        if (prev != nullptr){
+      }
+    }
+  }
+
+  void connect2(TreeLinkNode *root) {
+    queue<pair<TreeLinkNode*, int>> q;
+    q.push({root, 0});
+    TreeLinkNode* prev = root;
+    int dep = -1;
+    while (!q.empty()) {
+      TreeLinkNode* cur = q.front().first;
+      int curDep = q.front().second;
+      q.pop();
+      if (cur) {
+        if (curDep != dep) {
+          dep = curDep;
+        }else {
           prev->next = cur;
         }
         prev = cur;
+        q.push({cur->left, dep + 1});
+        q.push({cur->right, dep + 1});
       }
     }
+  }
+
+  void connect3(TreeLinkNode *root) {
+    TreeLinkNode* p = root;
+    while (p and p->left) {
+      TreeLinkNode* q = p;
+      while (q and q->left) {
+        q->left->next = q->right;
+        if (q->next) {
+          q->right->next = q->next->left;
+        }
+        q = q->next;
+      }
+      p = p->left;
+    }
+  }
+
+  void connect4(TreeLinkNode *root) {
+    if (!root) {
+      return;
+    }
+    if (!root->left) {
+      return;
+    }
+    root->left->next = root->right;
+    if (root->next) {
+      root->right->next = root->next->left;
+    }
+    connect4(root->left);
+    connect4(root->right);
   }
 };
 

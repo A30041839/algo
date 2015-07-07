@@ -4,7 +4,7 @@ using namespace std;
 
 class Solution1 {
 public:
-  int strStr(char *haystack, char *needle) {
+  int strStr(string haystack, string needle) {
     if (haystack == 0 or needle == 0){
       return -1;
     }

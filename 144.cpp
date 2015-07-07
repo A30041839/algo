@@ -5,60 +5,42 @@ using namespace std;
 class Solution {
 public:
   vector<int> preorderTraversal(TreeNode *root) {
-    vector<int> res;
-    if (!root){
-      return res;
-    }
+    return preorderTraversal2(root);
+  }
+
+  vector<int> preorderTraversal1(TreeNode *root) {
     stack<TreeNode*> stk;
-    TreeNode* p = root;
-    while (p or !stk.empty()){
-      if (p){
-        stk.push(p);
-        res.push_back(p->val);
-        p = p->left;
-      }else{
-        p = stk.top();
+    TreeNode* ptr = root;
+    vector<int> res;
+    while (ptr or !stk.empty()) {
+      if (ptr) {
+        res.push_back(ptr->val);
+        stk.push(ptr);
+        ptr = ptr->left;
+      }else {
+        ptr = stk.top()->right;
         stk.pop();
-        p = p->right;
       }
     }
     return res;
   }
 
   vector<int> preorderTraversal2(TreeNode *root) {
+    if (!root) {
+      return {};
+    }
     vector<int> res;
-    if (!root){
-      return res;
-    }
-    recursive(res, root);
-    return res;
-  }
-
-  void recursive(vector<int>& res, TreeNode* root){
-    res.push_back(root->val);
-    if (root->left){
-      recursive(res, root->left);
-    }
-    if (root->right){
-      recursive(res, root->right);
-    }
-  }
-  vector<int> preorderTraversal1(TreeNode *root) {
-    vector<int> res;
-    if (!root){
-      return res;
-    }
     stack<TreeNode*> stk;
     stk.push(root);
-    while (!stk.empty()){
-      TreeNode* p = stk.top();
+    while (!stk.empty()) {
+      TreeNode* cur = stk.top();
       stk.pop();
-      res.push_back(p->val);
-      if (p->right){
-        stk.push(p->right);
+      res.push_back(cur->val);
+      if (cur->right) {
+        stk.push(cur->right);
       }
-      if (p->left){
-        stk.push(p->left);
+      if (cur->left) {
+        stk.push(cur->left);
       }
     }
     return res;

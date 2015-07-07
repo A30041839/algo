@@ -5,32 +5,30 @@ using namespace std;
 class Solution {
 public:
   int compareVersion(string version1, string version2) {
-    istringstream iss1(version1);
-    istringstream iss2(version2);
-    string str1, str2;
+    return compareVersion1(version1, version2);
+  }
+
+  int compareVersion1(string version1, string version2) {
+    istringstream iss1(version1), iss2(version2);
+    string s1, s2;
     char delim = '.';
-    while (true){
-      auto& is1 = getline(iss1, str1, delim);
-      auto& is2 = getline(iss2, str2, delim);
-      if (is1 or is2){
-        if (!is1 and atoi(str2.c_str()) != 0){
-          return -1;
-        }else if(!is2 and atoi(str1.c_str()) != 0 ){
-          return 1;
-        }else if(is1 and is2){
-          int a = atoi(str1.c_str());
-          int b = atoi(str2.c_str());
-          if (a > b){
-            return 1;
-          }else if (a < b){
-            return -1;
-          }
+    while (true) {
+      auto& a = getline(iss1, s1, delim);
+      auto& b = getline(iss2, s2, delim);
+      int m = atoi(s1.c_str()), n = atoi(s2.c_str());
+      if (!a or !b) {
+        if (a) {
+          return m == 0 ? 0 : 1;
+        }else if (b) {
+          return n == 0 ? 0 : -1;
+        }else {
+          return 0;
         }
-      }else{
-        break;
+      }
+      if (m != n) {
+        return m > n ? 1 : -1;
       }
     }
-    return 0;
   }
 };
 
@@ -41,12 +39,13 @@ int main(){
   string v3("2.1");
   string v4("2.1.1");
   Solution s;
-  if (s.compareVersion(v1, v2) == 1){
-    cout << v1 << ">" << v2 << endl;
-  }else if (s.compareVersion(v1, v2) == -1){
-    cout << v1 << "<" << v2 << endl;
+  int res = s.compareVersion(v1, v3);
+  if (res == 1){
+    cout << v1 << ">" << v3 << endl;
+  }else if (res == -1){
+    cout << v1 << "<" << v3 << endl;
   }else{
-    cout << v1 << "=" << v2 << endl;
+    cout << v1 << "=" << v3 << endl;
   }
   return 0;
 }

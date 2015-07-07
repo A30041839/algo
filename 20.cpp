@@ -4,50 +4,30 @@ using namespace std;
 
 class Solution {
 public:
+  static map<char, char> mp;
+
   bool isValid(string s) {
-    bool res = true;
-    stack<char> stk;
-    for (int i = 0; i < s.length(); ++i){
-      switch (s[i]){
-      case '(':
-      case '{':
-      case '[':
-        stk.push(s[i]);
-        break;
-      case ')':
-        if (!stk.empty() and stk.top() == '('){
-          stk.pop();
-        }else{
-          res = false;
+    return isValid1(s);
+  }
+
+  bool isValid1(string s) {
+    vector<char> v;
+    int n = s.size();
+    for (int i = 0; i < n; ++i){
+      if (mp.find(s[i]) == mp.end()) {
+        v.push_back(s[i]);
+      }else {
+        if (v.empty() or v.back() != mp[s[i]]) {
+          return false;
         }
-        break;
-      case '}':
-        if (!stk.empty() and stk.top() == '{'){
-          stk.pop();
-        }else{
-          res = false;
-        }
-        break;
-      case ']':
-        if (!stk.empty() and stk.top() == '['){
-          stk.pop();
-        }else{
-          res = false;
-        }
-        break;
-      default:
-        break;
-      }
-      if (!res){
-        break;
+        v.pop_back();
       }
     }
-    if (!stk.empty()){
-      res = false;
-    }
-    return res;
+    return v.empty();
   }
 };
+
+map<char, char> Solution::mp = {{'}', '{'}, {')', '('}, {']', '['}};
 
 int main(){
   Solution s;

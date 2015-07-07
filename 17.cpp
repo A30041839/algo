@@ -4,43 +4,45 @@ using namespace std;
 
 class Solution {
 private:
-  static const vector<string> map;
+  static vector<string> map;
 
-  vector<string> letterCombinations_recursive1(string digits){
-    if (digits.empty()){
+  vector<string> dfs1(string digits){
+    vector<string> res;
+    if (digits.empty()) {
       return {{}};
     }
-    vector<string> res;
-    auto v = letterCombinations_recursive1(digits.substr(1));
-    for (auto& c : map[digits[0] - '0']){
-      for (auto& s : v){
-        res.push_back(string(1, c) + s);
+    vector<string> res1 = dfs1(digits.substr(1));
+    for (char c : map[digits[0] - '0']) {
+      for (string str : res1) {
+        res.push_back(c + str);
       }
     }
     return res;
   }
 
-  void letterCombinations_recursive2(string digits, vector<string>& res, string str, 
-    int i){
-    if (i == digits.length()){
+  void dfs2(string digits, vector<string>& res, string str) {
+    if (digits.empty()){
       res.push_back(str);
       return;
     }
-    string mapped_letters = map[digits[i] - '0'];
+    string mapped_letters = map[digits[0] - '0'];
     for (char c : mapped_letters){
-      str.push_back(c);
-      letterCombinations_recursive2(digits, res, str, i + 1);
-      str.pop_back();
+      dfs2(digits.substr(1), res, str + c);
     }
   }
 
 public:
   vector<string> letterCombinations(string digits) {
-    return letterCombinations_recursive1(digits);
+    if (digits.empty()) {
+      return {};
+    }
+    vector<string> res;
+    dfs2(digits, res, "");
+    return res;
   }
 };
 
-const vector<string> Solution::map = {"", "", "abc", "def", "ghi", "jkl", "mno",
+vector<string> Solution::map = {"", "", "abc", "def", "ghi", "jkl", "mno",
   "pqrs", "tuv", "wxyz"};
 
 int main(){

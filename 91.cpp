@@ -5,34 +5,30 @@ using namespace std;
 class Solution {
 public:
   int numDecodings(string s) {
-    if (!s.length()){
-      return 0;
-    }else{
-      return numDecodings1(s);
-    }
+    return numDecodings1(s);
   }
 
   int numDecodings1(string s){
-    vector<int> dp(s.length() + 1, 0);
-    dp[0] = 1;
-    for (int i = 1; i <= s.length(); ++i){
-      if (i > 1){
-        if ((s[i - 2] == '1') or (s[i - 2] == '2' and s[i - 1] >= '0' and s[i - 1] <= '6')){
-          dp[i] += dp[i - 2];
-        }
-      }
-      if (s[i - 1] >= '1' and s[i - 1] <= '9'){
-        dp[i] += dp[i - 1];
-      }
+    if (s.empty() or s[0] == '0') {
+      return 0;
     }
-    return dp[s.length()];
+    int n = s.size();
+    vector<int> dp(n, 0);
+    dp[0] = 1;
+    for (int i = 1; i < n; ++i) {
+      if (s[i - 1] == '1' or (s[i - 1] == '2' and s[i] >= '0' and s[i] <= '6')) {
+        dp[i] += i > 1 ? dp[i - 2] : 1;
+      }
+      dp[i] += s[i] == '0' ? 0 : dp[i - 1];
+    }
+    return dp.back();
   }
 };
 
 int main(){
   Solution s;
+  cout << s.numDecodings("12") << endl;
   cout << s.numDecodings("10") << endl;
-  cout << s.numDecodings("0") << endl;
   return 0;
 }
 

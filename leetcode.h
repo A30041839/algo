@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <cassert>
 #include <ctype.h>
 #include <iostream>
 #include <limits.h>

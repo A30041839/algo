@@ -5,33 +5,50 @@ using namespace std;
 class Solution {
 public:
   vector<string> restoreIpAddresses(string s) {
-    unordered_set<string> dic;
-    char str[3];
-    for (int i = 0; i <= 255; ++i){
-      sprintf(str, "%d", i);
-      dic.insert(string(str));
-    }
-    return restoreIpAddresses1(dic, s, 1);
+    return restoreIpAddresses2(s, 0);
   }
 
-  vector<string> restoreIpAddresses1(unordered_set<string>& dic, string s, int dep) {
-    if (dep == 4){
-      if (dic.count(s) > 0){
-        return {s};
-      }else{
-        return {};
+  void restoreIpAddresses1(vector<string>&res, string s, string ip, int dep) {
+    if (dep == 4) {
+      if (s.empty()) {
+        ip.pop_back(); //remove trailing dot
+        res.push_back(ip);
+      }
+      return;
+    }
+    string tmp;
+    for (int i = 0; i < 3 and i < s.size(); ++i) {
+      if (!tmp.empty() and atoi(tmp.c_str()) == 0) {
+        continue;
+      }
+      tmp.push_back(s[i]);
+      int m = atoi(tmp.c_str());
+      if (m >= 0 and m <= 255) {
+        restoreIpAddresses1(res, s.substr(i + 1), ip + tmp + ".", dep + 1);
       }
     }
+  }
+
+  vector<string> restoreIpAddresses2(string s, int dep) {
     vector<string> res;
-    for (int i = 0; i < s.length(); ++i){
-      string str1 = s.substr(0, i + 1);
-      if (dic.count(str1) > 0){
-        vector<string> tmp = restoreIpAddresses1(dic, s.substr(i + 1), dep + 1);
-        for (auto& str2 : tmp){
-          res.push_back(str1 + "." + str2);
-        }
-      }else{
+    if (dep == 4) {
+      if (s.empty()) {
+        res.push_back("");
+      }
+      return res;
+    }
+    for (int i = 1; i <= s.size(); ++i) {
+      string tmp = s.substr(0, i);
+      int m = atoi(tmp.c_str());
+      if ((i > 1 and tmp[0] == '0') or m > 255) {
         break;
+      }
+      vector<string> res1 = restoreIpAddresses2(s.substr(i), dep + 1);
+      if (dep < 3) {
+        tmp.push_back('.');
+      }
+      for (string str : res1) {
+        res.push_back(tmp + str);
       }
     }
     return res;
@@ -40,8 +57,8 @@ public:
 
 int main(){
   Solution s;
-  string str1 = "0000";
-  string str2 = "2736786374048";
+  string str1 = "010010";
+  string str2 = "25525511135";
   vector<string> res = s.restoreIpAddresses(str1);
   for (auto& ip : res){
     cout << ip << endl;

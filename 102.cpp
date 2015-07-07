@@ -5,29 +5,64 @@ using namespace std;
 class Solution {
 public:
   vector<vector<int> > levelOrder(TreeNode *root) {
-    vector<vector<int> > res;
-    if (root == NULL){
-      return res;
-    }
+    vector<vector<int>> res;
+    dfs(res, root, 0);
+    return res;
+  }
+
+  vector<vector<int> > levelOrder1(TreeNode *root) {
     queue<TreeNode*> q;
+    vector<vector<int>> res;
     q.push(root);
-    while (!q.empty()){
-      int last = q.size();
+    while (!q.empty()) {
       vector<int> level;
-      for (int i = 0; i < last; ++i){
-        TreeNode* ptr = q.front();
-        level.push_back(ptr->val);
+      int n = q.size();
+      while (n--) {
+        TreeNode* cur = q.front();
         q.pop();
-        if (ptr->left){
-          q.push(ptr->left);
-        }
-        if (ptr->right){
-          q.push(ptr->right);
+        if (cur) {
+          level.push_back(cur->val);
+          q.push(cur->left);
+          q.push(cur->right);
         }
       }
-      res.push_back(level);
+      if (!level.empty()) {
+        res.push_back(level);
+      }
     }
     return res;
+  }
+
+  vector<vector<int> > levelOrder2(TreeNode *root) {
+    vector<vector<int>> res;
+    queue<pair<TreeNode*, int>> q;
+    q.push({root, 0});
+    while (!q.empty()) {
+      TreeNode* cur = q.front().first;
+      int level = q.front().second;
+      q.pop();
+      if (cur) {
+        if (res.size() < level + 1) {
+          res.resize(level + 1);
+        }
+        res[level].push_back(cur->val);
+        q.push({cur->left, level + 1});
+        q.push({cur->right, level + 1});
+      }
+    }
+    return res;
+  }
+
+  void dfs(vector<vector<int>>& res, TreeNode* cur, int dep) {
+    if (!cur) {
+      return;
+    }
+    if (res.size() < dep + 1) {
+      res.resize(dep + 1);
+    }
+    res[dep].push_back(cur->val);
+    dfs(res, cur->left, dep + 1);
+    dfs(res, cur->right, dep + 1);
   }
 };
 

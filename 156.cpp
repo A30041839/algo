@@ -5,17 +5,42 @@ using namespace std;
 class Solution {
 public:
   TreeNode *upsideDownBinaryTree(TreeNode *root) {
-    TreeNode *parent = nullptr, *parent_right = nullptr, *cur = root;
-    while (cur) {
-      TreeNode* tmp1 = cur->left;
-      TreeNode* tmp2 = cur->right;
-      cur->left = parent_right;
-      cur->right = parent;
-      parent = cur;
-      cur = tmp1;
-      parent_right = tmp2;
+    return upsideDownBinaryTree1(root);
+  }
+
+  //iterative
+  TreeNode *upsideDownBinaryTree1(TreeNode *root) {
+    if (!root) {
+      return nullptr;
     }
-    return parent;
+    TreeNode* ptr = root, *new_root = nullptr;
+    stack<TreeNode*> stk;
+    while (ptr->left) {
+      stk.push(ptr);
+      ptr = ptr->left;
+    }
+    new_root = ptr;
+    while (!stk.empty()) {
+      TreeNode* tmp = stk.top();
+      stk.pop();
+      ptr->left = tmp->right;
+      ptr->right = tmp;
+      ptr = tmp;
+    }
+    root->left = root->right = nullptr;
+    return new_root;
+  }
+
+  //recursive
+  TreeNode *upsideDownBinaryTree2(TreeNode *root) {
+    if (!root or !root->left) {
+      return root;
+    }
+    TreeNode* l = upsideDownBinaryTree2(root->left);
+    root->left->left = root->right;
+    root->left->right = root;
+    root->left = root->right = nullptr;
+    return l;
   }
 };
 

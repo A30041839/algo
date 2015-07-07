@@ -5,38 +5,26 @@ using namespace std;
 class Solution {
 public:
   int maxPathSum(TreeNode *root) {
-    if (!root){
-      return 0;
-    }
-    int maxSum = INT_MIN;
-    maxPathSum1(root, maxSum);
-    return maxSum;
+    int res = INT_MIN;
+    maxPathSum1(root, res);
+    return res;
   }
-  
-  int maxPathSum1(TreeNode* root, int& maxSum){
-    if (!root->left and !root->right){
-      maxSum = max(maxSum, root->val);
-      return root->val;
+
+  int maxPathSum1(TreeNode *root, int& res) {
+    if (!root) {
+      return INT_MIN;
     }
-    int leftMaxSum = 0, rightMaxSum = 0;
-    if (root->left){
-      leftMaxSum = maxPathSum1(root->left, maxSum);
-      leftMaxSum = leftMaxSum > 0 ? leftMaxSum : 0;
-    }
-    if (root->right){
-      rightMaxSum = maxPathSum1(root->right, maxSum);
-      rightMaxSum = rightMaxSum > 0 ? rightMaxSum : 0;
-    }
-    int sum = root->val + leftMaxSum + rightMaxSum;
-    maxSum = max(maxSum, sum);
-    return leftMaxSum > rightMaxSum ? root->val + leftMaxSum : root->val + rightMaxSum;
+    int lmax = maxPathSum1(root->left, res);
+    int rmax = maxPathSum1(root->right, res);
+    res = max(res, max(lmax, 0) + max(rmax, 0) + root->val);
+    return max(max(lmax, rmax), 0) + root->val;
   }
 };
 
 int main(){
   Solution s;
   TreeNode* root = new TreeNode(1);
-  TreeNode* node1 = new TreeNode(-2);
+  TreeNode* node1 = new TreeNode(2);
   TreeNode* node2 = new TreeNode(3);
   //TreeNode* node4 = new TreeNode(1);
   //TreeNode* node5 = new TreeNode(3);

@@ -5,10 +5,9 @@ using namespace std;
 class Solution {
 public:
   int titleToNumber(string s) {
-    int res = 0;
-    int k = 1;
-    for (int i = s.length() - 1; i >= 0; --i){
-      res += k * (int)(s[i] - 'A' + 1);
+    int res = 0, n = s.size(), k = 1;
+    for (int i = n - 1; i >= 0; --i) {
+      res += k * (s[i] - 'A' + 1);
       k *= 26;
     }
     return res;

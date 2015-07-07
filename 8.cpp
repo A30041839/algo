@@ -4,72 +4,58 @@ using namespace std;
 
 class Solution {
 public:
-  int atoi(const char *str) {
-    istringstream iss(str);
-    string strn;
-    iss >> strn;
-    int sgn = 1;
+  int myAtoi(string str) {
     int res = 0;
-    for (int i = 0; i < strn.length(); ++i){
-      char c = strn[i];
-      if (c >= '0' and c <= '9'){
-        if (res <= INT_MAX / 10 and res >= INT_MIN / 10){
-          res *= 10;
-        }else{
-          return res > 0 ? INT_MAX : INT_MIN;
+    istringstream iss(str);
+    string s;
+    iss >> s;
+    int sgn = 1, n = s.size();
+    bool overflow = false;
+    for (int i = 0; i < n; ++i) {
+      if (s[i] == '+' or s[i] == '-') {
+        if (i != 0) {
+          break;
+        }else {
+          sgn = s[i] == '+' ? 1 : -1;
         }
-        if (res >= 0){
-          if(res <= INT_MAX - c + '0'){
-            res += c - '0';
-          }else{
-            return INT_MAX;
-          }
-        }else if (res < 0){
-          if (res >= INT_MIN + c - '0'){
-            res -= c - '0';
-          }else{
-            return INT_MIN;
-          }
+      }else if (isdigit(s[i])) {
+        if (res > INT_MAX / 10) {
+          overflow = true;
+          break;
         }
-        if (c != '0' and sgn == -1){
-          res *= -1;
-          sgn = 1;
+        res *= 10;
+        if (res > INT_MAX - s[i] + '0') {
+          overflow = true;
+          break;
         }
-      }else if (c == '-'){
-        if (i != 0){
-          return 0;
-        }
-        sgn = -1;
-      }else if (c == '+'){
-        if (i != 0){
-          return 0;
-        }
-        sgn = 1;
-      }else if (res != 0){
+        res += s[i] - '0';
+      }else {
         break;
-      }else{
-        return 0;
       }
     }
-    return res;
+    if (overflow) {
+      return sgn == 1 ? INT_MAX : INT_MIN;
+    }else {
+      return sgn * res;
+    }
   }
 };
 
 int main(){
-  const char *n1 = "-12147483648";
-  const char *n2 = " -0012a42";
-  const char *n3 = " ++123";
-  const char *n4 = "-123";
-  const char *n5 = " +123 ";
-  const char *n6 = "-123";
-  const char *n7 = " -123";
-  const char *n8 = "123456792383434";
-  const char *n9 = "0123";
+  string n1 = "-12147483648";
+  string n2 = "    10522545459";
+  string n3 = " ++123";
+  string n4 = "-123";
+  string n5 = " +123 ";
+  string n6 = "-123 12";
+  string n7 = " -123";
+  string n8 = "2147483648";
+  string n9 = "0123";
 
   Solution s;
-  vector<const char*> vec = {n1, n2, n3, n4, n5, n6, n7, n8, n9}; 
+  vector<string> vec = {n1, n2, n3, n4, n5, n6, n7, n8, n9};
   for (auto n : vec){
-    cout << atoi(n) << "," << s.atoi(n) << endl;
+    cout << atoi(n.c_str()) << "," << s.myAtoi(n) << endl;
   }
   return 0;
 }

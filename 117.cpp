@@ -8,32 +8,33 @@ public:
     return connect1(root);
   }
 
-  void connect1(TreeLinkNode* root) {
-    if (!root) {
-      return;
-    }
+  void connect1(TreeLinkNode *root) {
     queue<TreeLinkNode*> q;
     q.push(root);
     while (!q.empty()) {
       int n = q.size();
-      TreeLinkNode* prev = NULL;
-      for (int i = 0; i < n; ++i) {
+      TreeLinkNode* prev = nullptr;
+      while (n--) {
         TreeLinkNode* cur = q.front();
         q.pop();
-        if (!prev) {
+        if (cur) {
+          if (prev) {
+            prev->next = cur;
+          }
           prev = cur;
-        }else {
-          prev->next = cur;
-          prev = cur;
-        }
-        if (cur->left) {
           q.push(cur->left);
-        }
-        if (cur->right) {
           q.push(cur->right);
         }
       }
-      prev->next = NULL;
+    }
+  }
+
+  void connect2(TreeLinkNode *root) {
+    TreeLinkNode* p = root;
+    while (!p->left or !p->right) {
+      TreeLinkNode* prev = nullptr;
+      while (p and (!p->left or !p->right)) {
+      }
     }
   }
 };

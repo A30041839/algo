@@ -5,28 +5,27 @@ using namespace std;
 class Solution {
 public:
   int divide(int dividend, int divisor) {
-    if (divisor == 0){
+    if (divisor == 0) {
       return INT_MAX;
     }
-    long long res = divide1(abs((long long)dividend), abs((long long)divisor));
-    if ((dividend > 0 and divisor < 0) or (dividend < 0 and divisor > 0)){
-      res = ~res + 1;
-    }
-    res = res > INT_MAX ? INT_MAX : res;
-    return (int)res;
+    bool neg = (dividend < 0 and divisor > 0) or (dividend > 0 and divisor < 0) ?
+      true : false;
+    long _dividend = abs((long)dividend), _divisor = abs((long)divisor);
+    long res = _divide(_dividend, _divisor);
+    res = neg ? ~res + 1 : res;
+    return res > INT_MAX or res < INT_MIN ? INT_MAX : (int)res;
   }
 
-  long long divide1(long long dividend, long long divisor){
-    long long res = 0;
-    while (dividend >= divisor){
-      long long k = divisor;
-      long long m = 1;
-      while ((k << 1 > 0) and (k << 1 <= dividend)){
-        k = k << 1;
-        m = m << 1;
+  long _divide(long dividend, long divisor) {
+    long res = 0;
+    while (dividend >= divisor) {
+      long k = 1, d = divisor;
+      while (dividend >= d << 1) {
+        k <<= 1;
+        d <<= 1;
       }
-      res += m;
-      dividend -= k;
+      dividend -= d;
+      res |= k;
     }
     return res;
   }

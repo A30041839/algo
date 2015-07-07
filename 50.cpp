@@ -4,33 +4,40 @@ using namespace std;
 
 class Solution {
 public:
-  double pow(double x, long long n) {
-    if (n == 0){
+  double myPow(double x, int n) {
+    if (n < 0) {
+      return 1.0 / compute_pow2(x, -1 * (long)n);
+    }else {
+      return compute_pow2(x, n);
+    }
+  }
+
+  //recursive
+  double compute_pow1(double x, long n){
+    if (n == 0) {
       return 1;
-    }else if (n > 0){
-      return compute_pow(x, n);
-    }else{
-      return 1.0 / compute_pow(x, -1 * n);
     }
+    double ret = compute_pow1(x, n >> 1);
+    return n & 1 ? x * ret * ret : ret * ret;
   }
 
-  double compute_pow(double x, long long n){
-    if (n == 1){
-      return x;
+  //iterative
+  //consider n as binary
+  double compute_pow2(double x, long n){
+    double res = 1;
+    while (n) {
+      if (n & 1) {
+        res *= x;
+      }
+      x *= x;
+      n >>= 1;
     }
-    if (n & 1){
-      return x * compute_pow(x, n - 1);
-    }else{
-      double ret = compute_pow(x, n >> 1);
-      return ret * ret;
-    }
+    return res;
   }
-
 };
 
 int main(){
   Solution s;
-  cout << s.pow(1, -2147483648) << endl;
-  cout << pow(0.00001, 2147483647) << endl;
+  cout << s.myPow(2, -10) << endl;
   return 0;
 }

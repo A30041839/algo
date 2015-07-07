@@ -8,44 +8,44 @@ public:
     recoverTree1(root);
   }
 
-  void recoverTree1(TreeNode* root){
-    if (!root or (!root->left and !root->right)) {
+  void dfs(TreeNode* root, TreeNode*& p1, TreeNode*&p2, TreeNode*& prev) {
+    if (!root) {
       return;
     }
-    vector<pair<int, TreeNode*> > v;
-    inorder(root, v);
-    int len = v.size();
-    TreeNode* p1 = 0, *p2 = 0;
-    for (int i = 0; i < len - 1; ++i) {
-      if (v[i].first > v[i + 1].first) {
-        p1 = v[i].second;
-        break;
+    dfs(root->left, p1, p2, prev);
+    if (prev and prev->val >= root->val) {
+      if (!p1) {
+        p1 = prev;
       }
+      p2 = root;
     }
-    for (int j = len - 1; j > 0; --j) {
-      if (v[j].first < v[j - 1].first) {
-        p2 = v[j].second;
-        break;
-      }
-    }
-    swap(p1->val, p2->val);
+    prev = root;
+    dfs(root->right, p1, p2, prev);
   }
 
-  void inorder(TreeNode* root, vector<pair<int, TreeNode*> >& v) {
-    if (root) {
-      inorder(root->left, v);
-      v.push_back(make_pair(root->val, root));
-      inorder(root->right, v);
+  //O(log(n)) space
+  void recoverTree1(TreeNode *root) {
+    TreeNode *p1 = nullptr, *p2 = nullptr, *prev = nullptr;
+    dfs(root, p1, p2, prev);
+    if (p1 and p2) {
+      swap(p1->val, p2->val);
     }
   }
 
+  //O(1) space: threaded BST
+  void recoverTree2(TreeNode *root) {
+  }
+
+  //O(1) space: morris algorithm
+  void recoverTree3(TreeNode *root) {
+  }
 };
 
 int main(){
   Solution s;
-  TreeNode* root = new TreeNode(2);
-  TreeNode* node1 = new TreeNode(3);
-  TreeNode* node2 = new TreeNode(1);
+  TreeNode* root = new TreeNode(3);
+  TreeNode* node1 = new TreeNode(1);
+  TreeNode* node2 = new TreeNode(2);
   root->left = node1;
   root->right = node2;
   s.recoverTree(root);

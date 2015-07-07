@@ -5,31 +5,43 @@ using namespace std;
 class Solution {
 public:
   int minDepth(TreeNode *root) {
-    if (root == NULL){
+    return minDepth1(root);
+  }
+
+  int minDepth1(TreeNode *root) {
+    if (!root) {
       return 0;
     }
-    int res = 0;
     queue<TreeNode*> q;
     q.push(root);
-    while (!q.empty()){
-      int cur = 0;
-      int last = q.size();
+    int res = 0;
+    while (!q.empty()) {
+      int n = q.size();
       res++;
-      while (cur < last){
-        TreeNode* tmp = q.front();
+      while (n--) {
+        TreeNode* cur = q.front();
         q.pop();
-        if (tmp->left == NULL and tmp->right == NULL){
-          return res;
+        if (cur) {
+          if (!cur->left and !cur->right) {
+            return res;
+          }
+          q.push(cur->left);
+          q.push(cur->right);
         }
-        if (tmp->left != NULL){
-          q.push(tmp->left);
-        }
-        if (tmp->right != NULL){
-          q.push(tmp->right);
-        }
-        cur++;
       }
     }
+  }
+
+  void minDepth2(TreeNode *root, int dep, int& minDep) {
+    if (!root or dep >= minDep) {
+      return;
+    }
+    if (!root->left and !root->right) {
+      minDep = min(minDep, dep);
+      return;
+    }
+    minDepth2(root->left, dep + 1, minDep);
+    minDepth2(root->right, dep + 1, minDep);
   }
 };
 

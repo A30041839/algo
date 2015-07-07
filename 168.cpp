@@ -5,12 +5,13 @@ using namespace std;
 class Solution {
 public:
   string convertToTitle(int n) {
-    string res = ""; 
-    while (n-- > 0){
-      int k = n % 26;
-      res = (char)(k + 65) + res;
+    string res;
+    while (n) {
+      n--;
+      res.push_back(n % 26 + 'A');
       n /= 26;
     }
+    reverse(res.begin(), res.end());
     return res;
   }
 };

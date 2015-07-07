@@ -6,27 +6,24 @@ class Solution {
 public:
   vector<string> generateParenthesis(int n) {
     vector<string> res;
-    if (n <= 0){
-      return res;
-    }
     string str;
-    _generateParenthesis(res, str, 0, 0, n);
+    dfs(res, str, n, 0, 0);
     return res;
   }
 
-  void _generateParenthesis(vector<string>& res, string& str, int left, int unmatch_left, int n){
-    if (str.length() == 2 * n){
+  void dfs(vector<string>& res, string& str, int n, int left, int unpair){
+    if (str.size() == 2 * n) {
       res.push_back(str);
       return;
     }
-    if (unmatch_left > 0){
-      str.push_back(')');
-      _generateParenthesis(res, str, left, unmatch_left - 1, n);
+    if (left < n) {
+      str.push_back('(');
+      dfs(res, str, n, left + 1, unpair + 1);
       str.pop_back();
     }
-    if (left < n){
-      str.push_back('(');
-      _generateParenthesis(res, str, left + 1, unmatch_left + 1, n);
+    if (unpair > 0) {
+      str.push_back(')');
+      dfs(res, str, n, left, unpair - 1);
       str.pop_back();
     }
   }

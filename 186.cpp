@@ -5,22 +5,26 @@ using namespace std;
 class Solution {
 public:
   void reverseWords(string &s) {
+    reverseWords1(s);
+  }
+
+  void reverseWords1(string &s) {
     reverse(s.begin(), s.end());
-    for (int start = 0, i = 0; i < s.length(); ++i) {
+    s.push_back(' ');
+    int n = s.size();
+    for (int i = 0, j = 0; i < n; ++i) {
       if (s[i] == ' ') {
-        reverse(s.begin() + start, s.begin() + i);
-        start = i + 1;
-      }
-      if (i == s.length() - 1){
-        reverse(s.begin() + start, s.end());
+        reverse(s.begin() + j, s.begin() + i);
+        j = i + 1;
       }
     }
+    s.pop_back();
   }
 };
 
 int main(){
   Solution s;
-  string str = "";
+  string str = "the sky is blue";
   s.reverseWords(str);
   cout << str << endl;
 

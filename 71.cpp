@@ -5,27 +5,24 @@ using namespace std;
 class Solution {
 public:
   string simplifyPath(string path) {
-    vector<string> v;
+    string res, str;
     istringstream iss(path);
-    string str;
-    char delim = '/';
-    while (getline(iss, str, delim)){
-      if (!str.empty()){
-        if (str == ".."){
-          if (!v.empty()){
+    vector<string> v;
+    while (getline(iss, str, '/')) {
+      if (!str.empty()) {
+        if (str == "..") {
+          if (!v.empty()) {
             v.pop_back();
           }
-        }else if (str != "."){
+        }else if (str != ".") {
           v.push_back(str);
         }
       }
     }
-    string res;
-    for (int i = 0; i < v.size(); ++i){
-      res.push_back('/');
-      res.append(v[i]);
+    for (int i = 0; i < v.size(); ++i) {
+      res.append("/" + v[i]);
     }
-    if (v.size() == 0){
+    if (v.empty()) {
       res.push_back('/');
     }
     return res;
@@ -34,6 +31,6 @@ public:
 
 int main(){
   Solution s;
-  cout << s.simplifyPath("/../") << endl;
+  cout << s.simplifyPath("/a/./b/../../c/") << endl;
   return 0;
 }

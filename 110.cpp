@@ -5,21 +5,19 @@ using namespace std;
 class Solution {
 public:
   bool isBalanced(TreeNode *root) {
-    if (root == NULL){
-      return true;
-    }
-    if (isBalanced(root->left) and isBalanced(root->right)){
-      return abs(getHeight(root->left) - getHeight(root->right)) <= 1;
-    }else{
-      return false;
-    }
+    return isBalanced1(root) == -1 ? false : true;
   }
 
-  int getHeight(TreeNode* root) {
-    if (root != NULL){
-      return max(getHeight(root->left), getHeight(root->right)) + 1;
-    }else{
+  int isBalanced1(TreeNode *root) {
+    if (root == nullptr) {
       return 0;
+    }
+    int lh = isBalanced1(root->left);
+    int rh = isBalanced1(root->right);
+    if (lh == -1 or rh == -1 or abs(lh - rh) > 1) {
+      return -1;
+    }else {
+      return max(lh, rh) + 1;
     }
   }
 };

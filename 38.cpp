@@ -5,32 +5,19 @@ using namespace std;
 class Solution {
 public:
   string countAndSay(int n) {
-    if (n < 1){
-      return "";
-    }else{
-      return countAndSay1(n);
-    }
-  }
-
-  string countAndSay1(int n){
-    string str = "1";
-    while (--n){
-      string tmp;
-      int cnt = 1;
-      char c = str[0];
-      for (int i = 1; i < str.length(); ++i){
-        if (str[i] == str[i - 1]){
-          cnt++;
-        }else{
-          tmp.push_back(cnt + '0');
-          tmp.push_back(c);
-          c = str[i];
+    string str("1");
+    while (--n) {
+      ostringstream oss;
+      int k = str.size(), cnt = 1;
+      for (int i = 1; i <= k; ++i) {
+        if (i == k or str[i] != str[i - 1]) {
+          oss << cnt << str[i - 1];
           cnt = 1;
+        }else {
+          cnt++;
         }
       }
-      tmp.push_back(cnt + '0');
-      tmp.push_back(c);
-      str = tmp;
+      str = oss.str();
     }
     return str;
   }
@@ -38,6 +25,7 @@ public:
 
 int main(){
   Solution s;
+  cout << s.countAndSay(5) << endl;
   cout << s.countAndSay(20) << endl;
   return 0;
 }

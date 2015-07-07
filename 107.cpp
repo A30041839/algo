@@ -4,37 +4,64 @@ using namespace std;
 
 class Solution {
 public:
-  vector<vector<int> > levelOrderBottom(TreeNode *root) {
-    vector<vector<int> > res;
-    if (root == NULL){
-      return res;
-    }
-    stack<vector<int> > res1;
+  vector<vector<int>> levelOrderBottom(TreeNode* root) {
+    return levelOrderBottom2(root);
+  }
+
+  vector<vector<int>> levelOrderBottom1(TreeNode* root) {
+    vector<vector<int>> res;
     queue<TreeNode*> q;
     q.push(root);
-    while (!q.empty()){
-      vector<int> vec;
-      int cur = 0;
-      int last = q.size();
-      while (cur < last){
-        TreeNode* p = q.front();
+    while (!q.empty()) {
+      int n = q.size();
+      vector<int> level;
+      for (int i = 0; i < n; ++i) {
+        TreeNode* cur = q.front();
         q.pop();
-        vec.push_back(p->val);
-        if (p->left){
-          q.push(p->left);
+        if (cur) {
+          level.push_back(cur->val);
+          q.push(cur->left);
+          q.push(cur->right);
         }
-        if (p->right){
-          q.push(p->right);
-        }
-        cur++;
       }
-      res1.push(vec);
-    }
-    while (!res1.empty()){
-      res.push_back(res1.top());
-      res1.pop();
+      if (!level.empty()) {
+        res.insert(res.begin(), level);
+      }
     }
     return res;
+  }
+
+  vector<vector<int>> levelOrderBottom2(TreeNode* root) {
+    vector<vector<int>> res;
+    queue<pair<TreeNode*, int>> q;
+    q.push({root, 0});
+    while (!q.empty()) {
+      TreeNode* cur = q.front().first;
+      int dep = q.front().second;
+      q.pop();
+      if (cur) {
+        if (res.size() < dep + 1) {
+          res.resize(dep + 1);
+        }
+        res[dep].push_back(cur->val);
+        q.push({cur->left, dep + 1});
+        q.push({cur->right, dep + 1});
+      }
+    }
+    reverse(res.begin(), res.end());
+    return res;
+  }
+
+  void dfs(vector<vector<int>>& res, TreeNode* root, int dep) {
+    if (!root) {
+      return;
+    }
+    if (res.size() < dep + 1) {
+      res.resize(dep + 1);
+    }
+    res[dep].push_back(root->val);
+    dfs(res, root->left, dep + 1);
+    dfs(res, root->right, dep + 1);
   }
 };
 

@@ -6,11 +6,7 @@ class MinStack {
 public:
   void push(int x) {
     stk.push(x);
-    if (!min_stk.empty()){
-      if (min_stk.top() >= x){
-        min_stk.push(x);
-      }
-    }else{
+    if (min_stk.empty() or x <= min_stk.top()) {
       min_stk.push(x);
     }
   }
@@ -26,13 +22,16 @@ public:
   }
 
   int top() {
+    assert(!stk.empty());
     return stk.top();
   }
 
   int getMin() {
+    assert(!min_stk.empty());
     return min_stk.top();
   }
 
+private:
   stack<int> stk;
   stack<int> min_stk;
 };
