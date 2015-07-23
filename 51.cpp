@@ -3,61 +3,49 @@
 using namespace std;
 
 class Solution {
+  bool check(vector<int>& hash, int row, int col) {
+    for (int k = 0; k < row; ++k) {
+      if (hash[k] == col or row - k == abs(col - hash[k])) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 public:
-  vector<vector<string> > solveNQueens(int n) {
-    vector<vector<string> > res;
-    vector<string> solution;
-    vector<pair<int, int> > queens;
-    solveNQueens1(res, solution, queens, n, 0);
+  vector<vector<string>> solveNQueens(int n) {
+    vector<vector<string>> res;
+    vector<string> sol;
+    vector<int> hash(n, -1);
+    dfs(res, sol, hash, n, 0);
     return res;
   }
 
-  void solveNQueens1(vector<vector<string> >& res, vector<string>& solution,
-                     vector<pair<int, int> >& queens, int n, int dep){
-    if (dep == n){
-      res.push_back(solution);
+  void dfs(vector<vector<string>>& res, vector<string>& sol, vector<int>& hash,
+    int n, int row) {
+    if (row == n) {
+      res.push_back(sol);
       return;
     }
-    for (int i = 0; i < n; ++i){
-      if (check_column(queens, i)){
-        if (check_diagnal(queens, dep, i)){ 
-          queens.push_back({dep, i});
-          string row(n, '.');
-          row[i] = 'Q';
-          solution.push_back(row);
-          solveNQueens1(res, solution, queens, n, dep + 1);
-          solution.pop_back();
-          queens.pop_back();
-        }
+    for (int col = 0; col < n; ++col) {
+      if (check(hash, row, col)) {
+        hash[row] = col;
+        string tmp(n, '.');
+        tmp[col] = 'Q';
+        sol.push_back(tmp);
+        dfs(res, sol, hash, n, row + 1);
+        sol.pop_back();
       }
     }
-  }
-
-  bool check_column(vector<pair<int, int> >& queens, int i){
-    for (auto& p : queens){
-      if (p.second == i){
-        return false;
-      }
-    }
-    return true;
-  }
-
-  bool check_diagnal(vector<pair<int, int> >& queens, int i, int j){
-    for (auto& p : queens){
-      if (abs(p.first - i) == abs(p.second - j)){
-        return false;
-      }
-    }
-    return true;
   }
 };
 
-
 int main(){
   Solution s;
-  vector<vector<string> > res = s.solveNQueens(8);
+  int n = 4;
+  vector<vector<string>> res = s.solveNQueens(n);
   for (int i = 0; i < res.size(); ++i){
-    for (int j = 0; j < 8; ++j){
+    for (int j = 0; j < n; ++j){
       cout << res[i][j] << endl;
     }
     cout << endl;

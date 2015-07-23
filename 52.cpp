@@ -3,10 +3,9 @@
 using namespace std;
 
 class Solution {
-private:
-  bool check(vector<pair<int, int> >& queens, int i, int j){
-    for (auto& queen : queens){
-      if (queen.second == j or abs(queen.first - i) == abs(queen.second - j)){
+  bool check(vector<int>& hash, int row, int col) {
+    for (int k = 0; k < row; ++k) {
+      if (hash[k] == col or row - k == abs(col - hash[k])) {
         return false;
       }
     }
@@ -15,31 +14,29 @@ private:
 
 public:
   int totalNQueens(int n) {
-    int ttl = 0;
-    vector<pair<int, int> > queens;
-    totalNQueens1(n, 0, ttl, queens);
-    return ttl;
+    int res = 0;
+    vector<int> hash(n, -1);
+    dfs(res, hash, n, 0);
+    return res;
   }
 
-  void totalNQueens1(int n, int dep, int& ttl, vector<pair<int, int> >& queens) {
-    if (dep == n){
-      ttl++;
+  void dfs(int& res, vector<int>& hash, int n, int row) {
+    if (row == n) {
+      res++;
       return;
     }
-    for (int i = 0; i < n; ++i){
-      if (check(queens, dep, i)){
-        queens.push_back({dep, i});
-        totalNQueens1(n, dep + 1, ttl, queens);
-        queens.pop_back();
+    for (int col = 0; col < n; ++col) {
+      if (check(hash, row, col)) {
+        hash[row] = col;
+        dfs(res, hash, n, row + 1);
       }
     }
   }
-
 };
 
 int main(){
   Solution s;
-  cout << s.totalNQueens(4) << endl;
-  cout << s.totalNQueens(8) << endl;
+  int n = 4;
+  cout << s.totalNQueens(n) << endl;
   return 0;
 }

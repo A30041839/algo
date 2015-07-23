@@ -20,6 +20,7 @@
 #include <utility>
 #include <vector>
 #include <list>
+#include <deque>
 
 
 //data structures
