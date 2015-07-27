@@ -10,7 +10,7 @@ public:
     }else if (nums.size() == 1) {
       return {0};
     }else {
-      return productExceptSelf1(nums);
+      return productExceptSelf2(nums);
     }
   }
 
@@ -41,6 +41,19 @@ public:
 
   //O(1) space
   vector<int> productExceptSelf2(vector<int>& nums) {
+    int n = nums.size();
+    vector<int> res(n, 0);
+    res[n - 1] = nums[n - 1];
+    for (int i = n - 2; i > 0; --i) {
+      res[i] = res[i + 1] * nums[i];
+    }
+    int lp = 1;
+    for (int i = 0; i < n - 1; ++i) {
+      res[i] = lp * res[i + 1];
+      lp *= nums[i];
+    }
+    res[n - 1] = lp;
+    return res;
   }
 };
 

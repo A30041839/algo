@@ -5,57 +5,62 @@ using namespace std;
 class Solution {
 public:
   vector<int> postorderTraversal(TreeNode *root) {
-    vector<int> res;
     if (!root){
-      return res;
+      return {};
+    }else {
+      return postorderTraversal1(root);
     }
-    postorderTraversal2(res, root);
-    return res;
   }
 
-  void postorderTraversal2(vector<int>& res, TreeNode* root){
+  vector<int> postorderTraversal1(TreeNode* root){
     stack<TreeNode*> stk;
-    TreeNode* p = root;
-    TreeNode* prev = 0;
-    while (p or !stk.empty()){
-      if (p){
-        stk.push(p);
-        p = p->left;
-      }else{
-        p = stk.top();
-        if (prev == p->right){
-          res.push_back(p->val);
-          prev = p;
-          p = 0;
+    vector<int> res;
+    TreeNode* prev = nullptr, *cur = root;
+    while (cur or !stk.empty()) {
+      if (cur) {
+        stk.push(cur);
+        cur = cur->left;
+      }else {
+        cur = stk.top();
+        if (prev == cur->right) {
+          //return from right subtree
+          res.push_back(cur->val);
           stk.pop();
-        }else{
-          prev = p->right ? prev : 0;
-          p = p->right;
+          prev = cur;
+          //go to upper level
+          cur = nullptr;
+        }else {
+          cur = cur->right;
+          if (!cur) {
+            prev = nullptr;
+          }
         }
       }
     }
+    return res;
   }
 
-  void postorderTraversal1(vector<int>& res, TreeNode* root){
-    stack<TreeNode*> stk1;
-    stack<int> stk2;
-    TreeNode* p = root;
-    stk1.push(p);
-    while (!stk1.empty()){
-      p = stk1.top();
-      stk1.pop();
-      stk2.push(p->val);
-      if (p->left){
-        stk1.push(p->left);
+  vector<int> postorderTraversal2(TreeNode* root){
+    stack<TreeNode*> stk;
+    stack<int> visit;
+    vector<int> res;
+    stk.push(root);
+    while (!stk.empty()) {
+      TreeNode* cur = stk.top();
+      stk.pop();
+      visit.push(cur->val);
+      if (cur->left) {
+        stk.push(cur->left);
       }
-      if (p->right){
-        stk1.push(p->right);
+      if (cur->right) {
+        stk.push(cur->right);
       }
     }
-    while (!stk2.empty()){
-      res.push_back(stk2.top());
-      stk2.pop();
+    while (!visit.empty()) {
+      res.push_back(visit.top());
+      visit.pop();
     }
+    return res;
   }
 };
 

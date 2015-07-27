@@ -2,40 +2,47 @@
 
 using namespace std;
 
-struct station{
-  int index;
-  float gas;
-  float cost;
-  station(int _index, int _gas, int _cost): index(_index),
-         gas(_gas), cost(_cost) {}
-  bool operator<(const station& other) const{
-    return gas / cost > other.gas / other.cost;
-  }
-};
-
 class Solution {
-public:
-  int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
-    vector<station> stations;
-    int n = gas.size();
-    for (int i = 0; i < n; ++i){
-      stations.push_back(station(i, gas[i], cost[i]));
+private:
+  struct station {
+    int id;
+    int gas;
+    int cost;
+    station(int _id, int _gas, int _cost) : id(_id), gas(_gas), cost(_cost) {}
+    bool operator<(const station& other) const{
+      return gas - cost > other.gas - other.cost;
     }
-    sort(stations.begin(), stations.end());
-    for (int i = 0; i < n; ++i){
-      int vol = 0;
-      int j = stations[i].index;
-      for (; j < stations[i].index + n; ++j){
-        vol += gas[j % n] - cost[j % n];
-        if (vol < 0){
+  };
+
+public:
+  int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+    return canCompleteCircuit2(gas, cost);
+  }
+
+  int canCompleteCircuit1(vector<int>& gas, vector<int>& cost) {
+    vector<station> v;
+    int n = gas.size();
+    for (int i = 0; i < n; ++i) {
+      v.push_back(station(i, gas[i], cost[i]));
+    }
+    sort(v.begin(), v.end());
+    //choose starting station with (gas - cost) highest first
+    for (int i = 0; i < n; ++i) {
+      int r = 0, j;
+      for (j = v[i].id; j < v[i].id + n; ++j) {
+        r += gas[j % n] - cost[j % n];
+        if (r < 0) {
           break;
         }
       }
-      if (j == stations[i].index + n){
-        return stations[i].index;
+      if (j == v[i].id + n) {
+        return v[i].id;
       }
     }
     return -1;
+  }
+
+  int canCompleteCircuit2(vector<int>& gas, vector<int>& cost) {
   }
 };
 

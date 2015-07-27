@@ -5,23 +5,23 @@ using namespace std;
 class Solution {
 public:
   vector<TreeNode *> generateTrees(int n) {
-    return generateTrees1(1, n);
+    return dfs(1, n);
   }
-  
-  vector<TreeNode* > generateTrees1(int s, int e) {
-    if (s > e){
+
+  vector<TreeNode *> dfs(int low, int high) {
+    if (low > high) {
       return {nullptr};
     }
-    vector<TreeNode* > res;
-    for (int i = s; i <= e; ++i){
-      vector<TreeNode* > left_subtrees = generateTrees1(s, i - 1);
-      vector<TreeNode* > right_subtrees = generateTrees1(i + 1, e);
-      for (TreeNode* l : left_subtrees){
-        for (TreeNode* r : right_subtrees){
-          TreeNode* new_node = new TreeNode(i);
-          new_node->left = l;
-          new_node->right = r;
-          res.push_back(new_node);
+    vector<TreeNode*> res;
+    for (int r = low; r <= high; ++r) {
+      auto lsub = dfs(low, r - 1);
+      auto rsub= dfs(r + 1, high);
+      for (auto& lt : lsub) {
+        for (auto& rt : rsub) {
+          TreeNode* root = new TreeNode(r);
+          root->left = lt;
+          root->right = rt;
+          res.push_back(root);
         }
       }
     }
@@ -32,7 +32,6 @@ public:
 int main(){
   Solution s;
   vector<TreeNode* > res = s.generateTrees(3);
-  cout << res[0]->right->val << endl;
-  cout << res[1]->right->val << endl;
+  cout << res.size() << endl;
   return 0;
 }

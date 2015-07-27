@@ -21,22 +21,21 @@ public:
     if (hasNext()){
       cur = stk.top();
       stk.pop();
-      int res = cur->val;
+      int ret = cur->val;
       cur = cur->right;
       while (cur){
         stk.push(cur);
         cur = cur->left;
       }
-      return res;
+      return ret;
     }else{
       throw exception();
     }
   }
 
-protected:
+private:
   stack<TreeNode*> stk;
   TreeNode* cur;
-
 };
 
 

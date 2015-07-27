@@ -13,17 +13,17 @@ public:
    * @return    The number of characters read
    */
   int read(char *buf, int n) {
-    int num_chars_read = 0;
-    int cnt;
-    while (num_chars_read < n and (cnt = read4(buf))) {
-      buf += cnt;
-      num_chars_read += cnt;
+    int char_read = 0, cur = 0;
+    while (char_read < n) {
+      cur = read4(buf + char_read);
+      char_read += cur;
+      if (cur < 4) {
+        break;
+      }
     }
-    if (num_chars_read >= n) {
-      buf[n] = '\0';
-      num_chars_read = n;
-    }
-    return num_chars_read;
+    char_read = min(char_read, n);
+    buf[char_read] = '\0';
+    return char_read;
   }
 };
 

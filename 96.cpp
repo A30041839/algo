@@ -5,18 +5,32 @@ using namespace std;
 class Solution {
 public:
   int numTrees(int n) {
-    if (n <= 0){
-      return 0;
-    }
+    return numTrees1(n);
+  }
+
+  //dp
+  int numTrees1(int n) {
     vector<int> dp(n + 1, 0);
-    dp[0] = dp[1] = 1;
-    for (int i = 2; i <= n; ++i){
-      for (int k = 0; k <= (i - 1) / 2; ++k){
-        dp[i] += dp[k] * dp[i - k - 1] * 2;
+    dp[0] = 1;
+    for (int i = 1; i <= n; ++i) {
+      //j left nodes, and i - j - 1 right nodes
+      for (int j = 0; j < i; ++j) {
+        dp[i] += dp[j] * dp[i - j - 1];
       }
-      dp[i] -= i & 1 ? dp[(i - 1) / 2] * dp[(i - 1) / 2] : 0;
     }
-    return dp[n];
+    return dp.back();
+  }
+
+  //recursive TLE!!
+  int numTrees2(int n) {
+    if (n == 0) {
+      return 1;
+    }
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+      res += numTrees2(i) * numTrees2(n - i - 1);
+    }
+    return res;
   }
 };
 
