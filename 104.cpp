@@ -5,7 +5,7 @@ using namespace std;
 class Solution {
 public:
   int maxDepth(TreeNode *root) {
-    return maxDepth3(root);
+    return maxDepth4(root);
   }
 
   void maxDepth1(TreeNode *root, int dep, int& maxDep) {
@@ -47,6 +47,33 @@ public:
       }
       if (f) {
         res++;
+      }
+    }
+    return res;
+  }
+
+  int maxDepth4(TreeNode* root) {
+    if (!root) {
+      return 0;
+    }
+    stack<TreeNode*> stk;
+    TreeNode* cur = root, *prev = nullptr;
+    int res = 0;
+    while (cur or !stk.empty()) {
+      if (cur) {
+        stk.push(cur);
+        cur = cur->left;
+      }else {
+        res = max(res, (int)stk.size());
+        if (prev == stk.top()->right) {
+          prev = stk.top();
+          stk.pop();
+        }else {
+          cur = stk.top()->right;
+          if (!cur) {
+            prev = nullptr;
+          }
+        }
       }
     }
     return res;
