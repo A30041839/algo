@@ -43,6 +43,18 @@ public:
   }
 
   int canCompleteCircuit2(vector<int>& gas, vector<int>& cost) {
+    int n = gas.size();
+    int leftgas = 0, sum = 0;
+    int start = 0;
+    for (int i = 0; i < n; ++i) {
+      leftgas += gas[i] - cost[i];
+      sum += gas[i] - cost[i];
+      if (sum < 0) {
+        sum = 0;
+        start = i + 1;
+      }
+    }
+    return leftgas < 0 ? -1 : start;
   }
 };
 

@@ -71,7 +71,7 @@ public:
 
 int main(){
   Solution s;
-  vector<int> height = {2,1,5,6,2,3};
+  vector<int> height = {3,1,3,2,2};
   cout << s.largestRectangleArea(height) << endl;
   return 0;
 }

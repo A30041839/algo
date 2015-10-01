@@ -5,9 +5,10 @@ using namespace std;
 class Solution {
 public:
   bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+    return solve1(nums, k, t);
   }
 
-  bool containsNearbyAlmostDuplicate1(vector<int>& nums, int k, int t) {
+  bool solve1(vector<int>& nums, int k, int t) {
   }
 };
 
