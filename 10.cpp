@@ -9,11 +9,6 @@ public:
   }
 
   bool isMatch1(string s, string p) {
-    if (s.empty()) {
-      return false;
-    }
-    int n = s.size();
-    vector<bool> dp(n, false);
 
   }
 };

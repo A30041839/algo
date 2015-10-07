@@ -2,10 +2,45 @@
 
 using namespace std;
 
+class TrieNode {
+public:
+  bool terminate;
+  TrieNode* next[26];
+
+public:
+    // Initialize your data structure here.
+  TrieNode() {
+    terminate = false;
+    memset(next, 0, sizeof(next));
+  }
+};
+
+class Trie {
+public:
+  Trie() {
+      root = new TrieNode();
+  }
+
+  // Inserts a word into the trie.
+  void insert(string s) {
+    int n = s.size();
+    TrieNode* ptr = root;
+    for (int i = 0; i < n; ++i) {
+      if (!ptr->next[s[i] - 'a']) {
+        ptr->next[s[i] - 'a'] = new TrieNode();
+      }
+      ptr = ptr->next[s[i] - 'a'];
+    }
+    ptr->terminate = true;
+  }
+
+  TrieNode* root;
+};
+
 class Solution {
 private:
-  vector<int> dirx;
-  vector<int> diry;
+  vector<int> dirx = {1, -1, 0, 0};
+  vector<int> diry = {0, 0, 1, -1};
 public:
   vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
     if (board.empty() or board[0].empty() or words.empty()) {
@@ -15,54 +50,48 @@ public:
     }
   }
 
-  //TLE
+  //using trie
   vector<string> findWords1(vector<vector<char>>& board, vector<string>& words) {
+    Trie tri;
+    for (auto word : words) {
+      tri.insert(word);
+    }
     vector<string> res;
-    dirx = {0, 1, 0, -1};
-    diry = {1, 0, -1, 0};
     int m = board.size(), n = board[0].size();
-    vector<vector<bool>> visited(m, vector<bool>(n, false));
-    for (auto& word : words) {
-      if (word.empty()) {
-        continue;
-      }
-      for (int i = 0; i < m; ++i) {
-        for (int j = 0; j < n; ++j) {
-          if (board[i][j] == word[0]) {
-            visited[i][j] = true;
-            if (dfs1(board, visited, word, m, n, i, j, 1)) {
-              res.push_back(word);
-            }
-            visited[i][j] = false;
-          }
-        }
+    for (int i = 0; i < m; ++i) {
+      for (int j = 0; j < n; ++j) {
+        dfs(board, res, tri.root, "", i, j, m, n);
       }
     }
     return res;
   }
 
-  bool isValid(int x, int y, int m, int n) {
-    return x >= 0 and x < m and y >= 0 and y < n;
-  }
-
-  bool dfs1(vector<vector<char>>& board, vector<vector<bool>>& visited, string& word,
-    int m, int n, int curx, int cury, int pos) {
-    if (pos == word.size()) {
-      return true;
+  void dfs(vector<vector<char>>& board, vector<string>& res, TrieNode* node, string str,
+    int curx, int cury, int m, int n) {
+    char c = board[curx][cury];
+    node = node->next[c - 'a'];
+    if (!node) {
+      return;
     }
-    for (int i = 0; i < 4; ++i) {
-      int nx = curx + dirx[i];
-      int ny = cury + diry[i];
-      if (isValid(nx, ny, m, n) and !visited[nx][ny] and board[nx][ny] == word[pos]) {
-        visited[nx][ny] = true;
-        if (dfs1(board, visited, word, m, n, nx, ny, pos + 1)) {
-          visited[nx][ny] = false;
-          return true;
-        }
-        visited[nx][ny] = false;
+    str.push_back(c);
+    if (node->terminate) {
+      node->terminate = false;
+      res.push_back(str);
+    }
+    board[curx][cury] = '.';
+    for (int dir = 0; dir < 4; ++dir) {
+      int nx = curx + dirx[dir];
+      int ny = cury + diry[dir];
+      if (isValid(nx, ny, m, n) and board[nx][ny] != '.') {
+        dfs(board, res, node, str, nx, ny, m, n);
       }
     }
-    return false;
+    str.pop_back();
+    board[curx][cury] = c;
+  }
+
+  bool isValid(int x, int y, int m, int n) {
+    return x >= 0 and x < m and y >= 0 and y < n;
   }
 };
 

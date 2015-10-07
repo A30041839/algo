@@ -102,6 +102,14 @@ void print_array(int nums[], int n){
   std::cout << std::endl;
 }
 
+void print_list(ListNode* head) {
+  while (head) {
+    std::cout << head->val << ",";
+    head = head->next;
+  }
+  std::cout << std::endl;
+}
+
 template <class T>
 void print_vec(std::vector<T>& v) {
   for (T& elem : v) {

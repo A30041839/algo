@@ -3,52 +3,47 @@
 using namespace std;
 
 class LRUCache{
-public:
-  struct cacheItem{
-    int key;
-    int val;
-    cacheItem(int _key, int _val): key(_key), val(_val) {}
-  };
+private:
+  list<pair<int, int>> mlist;
+  unordered_map<int, list<pair<int, int>>::iterator> mmap;
+  int mcapacity;
 
+  void move_to_front(int key, list<pair<int, int>>::iterator iter) {
+    if (iter == mlist.begin()) {
+      return;
+    }
+    mlist.push_front(*iter);
+    mlist.erase(iter);
+    mmap[key] = mlist.begin();
+  }
+
+public:
   LRUCache(int capacity) {
-    m_capacity = capacity;
+    mcapacity = capacity;
   }
 
   int get(int key) {
-    if (m_map.count(key) > 0) {
-      move_to_front(m_map[key]);
-      m_map[key] = m_list.begin();
-      return m_list.front().val;
+    if (mmap.find(key) != mmap.end()) {
+      move_to_front(key, mmap[key]);
+      return mmap[key]->second;
     }else {
       return -1;
     }
   }
 
   void set(int key, int value) {
-    if (m_map.count(key) > 0) {
-      m_map[key]->val = value;
-      move_to_front(m_map[key]);
-      m_map[key] = m_list.begin();
+    if (mmap.find(key) != mmap.end()) {
+      move_to_front(key, mmap[key]);
+      mmap[key]->second = value;
     }else {
-      if (m_map.size() == m_capacity) {
-        int del = m_list.back().key;
-        m_list.pop_back();
-        m_map.erase(del);
+      if (mmap.size() == mcapacity) {
+        int remove_key = mlist.back().first;
+        mmap.erase(remove_key);
+        mlist.pop_back();
       }
-      cacheItem newItem(key, value);
-      m_list.push_front(newItem);
-      m_map[key] = m_list.begin();
+      mlist.push_front(make_pair(key, value));
+      mmap[key] = mlist.begin();
     }
-  }
-
-private:
-  int m_capacity;
-  unordered_map<int, list<cacheItem>::iterator> m_map;
-  list<cacheItem> m_list;
-
-  void move_to_front(list<cacheItem>::iterator iter) {
-    m_list.push_front(*iter);
-    m_list.erase(iter);
   }
 };
 

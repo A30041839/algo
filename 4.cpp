@@ -30,9 +30,9 @@ public:
     int a = *(iter1 + i - 1);
     int b = *(iter2 + j - 1);
     if (a > b) {
-      return findKth(iter1, m, iter2 + j, n - j, k - j);
+      return findKth(iter1, i, iter2 + j, n - j, k - j);
     }else if (a < b){
-      return findKth(iter1 + i, m - i, iter2, n, k - i);
+      return findKth(iter1 + i, m - i, iter2, j, k - i);
     }else{
       return a;
     }

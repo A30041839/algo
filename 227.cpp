@@ -15,7 +15,7 @@ public:
   static unordered_map<char, int> mp;
 
   int calculate(string s) {
-    return calculate3(s);
+    return calculate4(s);
   }
 
 private:
@@ -220,6 +220,32 @@ private:
     ExpressionTreeNode* expTree = buildExpressionTree(s);
     return _calculateExptree(expTree);
   }
+
+  //只能求解包含+,-算数运算符的表达式
+  int calculate4(string s) {
+    vector<int> v = {1, 1};
+    int res = 0, n = s.size();
+    for (int i = 0; i < n; ++i) {
+      if (isdigit(s[i])) {
+        int num = s[i] - '0';
+        int j = i + 1;
+        while (j < n and isdigit(s[j])) {
+          num = num * 10 + s[j] - '0';
+          j++;
+        }
+        i = j - 1;
+        res += v.back() * num;
+        v.pop_back();
+      }else if (s[i] == '+' or s[i] == '(') {
+        v.push_back(v.back());
+      }else if (s[i] == '-') {
+        v.push_back(-1 * v.back());
+      }else if (s[i] == ')') {
+        v.pop_back();
+      }
+    }
+    return res;
+  }
 };
 
 vector<vector<char>> Solution::precedence = {
@@ -241,7 +267,7 @@ int main() {
     "1 + 1",
     " 2-1 + 2 ",
     "(1+(4+5+2)-3)+(6+8)",
-    "(1+2)*(3-5)+2*(3+(4/2))",
+    //"(1+2)*(3-5)+2*(3+(4/2))",
     "2147483647"
   };
   for (string exp : exps) {
