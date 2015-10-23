@@ -49,7 +49,6 @@ public:
   vector<vector<int>> fourSum2(vector<int>& nums, int target) {
     vector<vector<int>> res;
     unordered_map<int, vector<pair<int, int>>> mp;
-    unordered_map<string, vector<int>> resmp;
     int n = nums.size();
     for (int i = 0; i < n - 1; ++i) {
       for (int j = i + 1; j < n; ++j) {
@@ -64,16 +63,13 @@ public:
             if (check(p1, p2)) {
               vector<int> tmp = {nums[p1.first], nums[p1.second], nums[p2.first], nums[p2.second]};
               sort(tmp.begin(), tmp.end());
-              char str[100];
-              sprintf(str, "%d,%d,%d,%d", tmp[0], tmp[1], tmp[2], tmp[3]);
-              resmp[string(str)] = tmp;
+              if (find(res.begin(), res.end(), tmp) == res.end()) {
+                res.push_back(tmp);
+              }
             }
           }
         }
       }
-    }
-    for (auto& kvp : resmp) {
-      res.push_back(kvp.second);
     }
     return res;
   }

@@ -5,24 +5,10 @@ using namespace std;
 class Solution {
 public:
   void sortColors(vector<int>& nums) {
-    sortColors2(nums);
+    sortColors1(nums);
   }
 
   void sortColors1(vector<int>& nums) {
-    int n = nums.size();
-    int b[3] = {0, 0, 0};
-    for (int i = 0; i < n; ++i){
-      b[nums[i]]++;
-    }
-    int k = 0;
-    for (int i = 0; i < 3; ++i){
-      for (int j = 0; j < b[i]; ++j){
-        nums[k++] = i;
-      }
-    }
-  }
-
-  void sortColors2(vector<int>& nums) {
     int i = 0, zero = 0, two = nums.size() - 1;
     while (i <= two) {
       if (nums[i] == 0) {

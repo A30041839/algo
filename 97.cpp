@@ -9,44 +9,28 @@ public:
   }
 
   bool isInterleave1(string s1, string s2, string s3) {
-    //MLE
-    if (s3.empty()) {
-      if (!s1.empty() or !s2.empty()) {
-        return false;
-      }else {
-        return true;
-      }
+    if (s1.size() + s2.size() != s3.size()) {
+      return false;
     }
-
-    int l1 = s1.size();
-    int l2 = s2.size();
-    int l3 = s3.size();
-    vector<pair<int, int> > dp;
-    for (int i = 0; i < l3; ++i) {
-      if (i == 0) {
-        if (!s1.empty() and s1[0] == s3[0]) {
-          dp.push_back(make_pair(0, -1));
+    unordered_map<int, int> mp;
+    unordered_map<int, int> tmp;
+    mp.insert({-1, -1});
+    int k = 0;
+    int n = s3.size();
+    while (!mp.empty() and k < n) {
+      tmp.clear();
+      for (auto& p : mp) {
+        if (s1[p.first + 1] == s3[k]) {
+          tmp.insert({p.first + 1, p.second});
         }
-        if (!s2.empty() and s2[0] == s3[0]) {
-          dp.push_back(make_pair(-1, 0));
+        if (s2[p.second + 1] == s3[k]) {
+          tmp.insert({p.first, p.second + 1});
         }
-      }else {
-        if (dp.empty()) {
-          return false;
-        }
-        vector<pair<int, int> > tmp;
-        for (auto& p : dp) {
-          if (p.first < l1 - 1 and s1[p.first + 1] == s3[i]) {
-            tmp.push_back(make_pair(p.first + 1, p.second));
-          }
-          if (p.second < l2 - 1 and s2[p.second + 1] == s3[i]) {
-            tmp.push_back(make_pair(p.first, p.second + 1));
-          }
-        }
-        dp = tmp;
       }
+      k++;
+      mp = tmp;
     }
-    return true;
+    return !mp.empty();
   }
 };
 
@@ -57,10 +41,8 @@ int main(){
   string s3 = "aadbbcbcac";
   string s4 = "aadbbbaccc";
   string s5 = "aabcc";
-
   if (s.isInterleave(s1, s2, s3)) {
     cout << "yes" << endl;
   }
-
   return 0;
 }

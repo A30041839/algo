@@ -5,75 +5,41 @@ using namespace std;
 class Solution {
 public:
   vector<int> findSubstring(string s, vector<string>& words) {
-    return findSubstring2(s, words);
-  }
-
-  //naive method O(n * word_cnt * word_len)
-  vector<int> findSubstring1(string s, vector<string>& words) {
-    int word_len = words[0].size(), word_cnt = words.size(), n = s.size();
-    vector<int> res;
-    unordered_map<string, int> dic;
-    for (auto& word : words) {
-      dic[word]++;
-    }
-    for (int i = 0; i <= n - word_len * word_cnt; ++i) {
-      unordered_map<string, int> mp;
-      bool f = true;
-      for (int k = 0; k < word_cnt; k++) {
-        string str = s.substr(i + k * word_len, word_len);
-        if (dic.count(str) and mp[str] < dic[str]) {
-          mp[str]++;
-        }else {
-          f = false;
-          break;
-        }
-      }
-      if (f) {
-        res.push_back(i);
-      }
-    }
-    return res;
-  }
-
-  //slide window: O(n * word_len)
-  vector<int> findSubstring2(string s, vector<string>& words) {
-    int n = s.size(), word_len = words[0].size();
-    int i = 0, counter = 0, window_beg, window_end, word_cnt = words.size();
-    unordered_map<string ,int> dic;
+    int n = s.size(), wordlen = words[0].size();
+    int start = 0, wordnum = words.size();
     unordered_map<string, int> mp;
-    vector<int> res;
-    for (string& word : words) {
-      dic[word]++;
+    for (auto& w : words) {
+      mp[w]++;
     }
-    while (i < word_len) {
-      window_beg = i;
-      counter = 0;
-      mp.clear();
-      for (window_end = i; window_end <= n - word_len; window_end += word_len) {
-        string str = s.substr(window_end, word_len);
-        if (dic.find(str) != dic.end()) {
-          if (mp[str] < dic[str]) {
-            mp[str]++;
-            counter++;
+    unordered_map<string, int> cnt;
+    vector<int> res;
+    while (start < wordlen) {
+      cnt.clear();
+      int count = 0;
+      for (int beg = start, i = beg; i <= n - wordlen; i += wordlen) {
+        string str = s.substr(i, wordlen);
+        if (mp.count(str)) {
+          if (cnt[str] < mp[str]) {
+            cnt[str]++;
+            count++;
           }else {
-            //set windows begin to the end of first occurence of current word
-            while (s.substr(window_beg, word_len) != str) {
-              mp[s.substr(window_beg, word_len)]--;
-              counter--;
-              window_beg += word_len;
+            while (s.substr(beg, wordlen) != str) {
+              cnt[s.substr(beg, wordlen)]--;
+              count--;
+              beg += wordlen;
             }
-            window_beg += word_len;
+            beg += wordlen;
           }
-        } else {
-          mp.clear();
-          counter = 0;
-          window_beg = window_end + word_len;
+        }else {
+          cnt.clear();
+          count = 0;
+          beg = i + wordlen;
         }
-        if (counter == word_cnt) {
-          res.push_back(window_beg);
+        if (count == wordnum) {
+          res.push_back(beg);
         }
       }
-      i++;
+      start++;
     }
     return res;
   }

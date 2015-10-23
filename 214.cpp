@@ -8,9 +8,18 @@ public:
     return shortestPalindrome1(s);
   }
 
-  //http://www.cnblogs.com/grandyang/p/4523624.html
   //kmp
   string shortestPalindrome1(string s) {
+    string r = s;
+    reverse(r.begin(), r.end());
+    string t = s + "$" + r;
+    vector<int> p(t.size(), 0);
+    for (int i = 1; i < t.size(); ++i) {
+      int j = p[i - 1];
+      while (j > 0 and t[i] != t[j]) j = p[j - 1];
+      p[i] = (j += t[i] == t[j]);
+    }
+    return r.substr(0, s.size() - p[t.size() - 1]) + s;
   }
 };
 
