@@ -11,6 +11,7 @@ public:
   void sortColors1(vector<int>& nums) {
     int i = 0, zero = 0, two = nums.size() - 1;
     while (i <= two) {
+      //we must make sure either i or two moves in each iteration
       if (nums[i] == 0) {
         swap(nums[i++], nums[zero++]);
       }else if (nums[i] == 2) {

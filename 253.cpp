@@ -1,19 +1,38 @@
-#include "leetcode.h"
-
-using namespace std;
-
-/**
- * Definition for an interval.
- * struct Interval {
- *     int start;
- *     int end;
- *     Interval() : start(0), end(0) {}
- *     Interval(int s, int e) : start(s), end(e) {}
- * };
- */
 class Solution {
 public:
   int minMeetingRooms(vector<Interval>& intervals) {
+    return minMeetingRooms1(intervals);
+  }
+
+  int minMeetingRooms1(vector<Interval>& intervals) {
+    if (intervals.empty()) {
+      return 0;
+    }
+    int n = intervals.size();
+    vector<pair<int, bool>> v;
+    for (auto& i : intervals) {
+      v.push_back({i.start, true});
+      v.push_back({i.end, false});
+    }
+    sort(v.begin(), v.end(), [](const pair<int, bool>& lhs, const pair<int, bool>& rhs) {
+      return lhs.first < rhs.first;});
+    int res = 0;
+    int cnt = 0;
+    for (int i = 0; i < v.size(); ++i) {
+      if (v[i].second) {
+        cnt++;
+        if (i < v.size() - 1 and !v[i + 1].second and v[i + 1].first == v[i].first) {
+          continue;
+        }
+      }else {
+        cnt--;
+      }
+      res = max(res, cnt);
+    }
+    return res;
+  }
+
+  int minMeetingRooms2(vector<Interval>& intervals) {
     if (intervals.empty()) {
       return 0;
     }
