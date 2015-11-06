@@ -1,16 +1,10 @@
-#include "leetcode.h"
-
-using namespace std;
-
 // Forward declaration of the read4 API.
 int read4(char *buf);
 
 class Solution {
-private:
-  char _buf[3];
-  int _buf_len;
+  char cache[3];
+  int cache_size = 0;
 public:
-  Solution(): _buf_len(0) {}
   /**
    * @param buf Destination buffer
    * @param n   Maximum number of characters to read
@@ -20,36 +14,28 @@ public:
     if (n <= 0) {
       return 0;
     }
-    int m, remain = n, offset = _buf_len;
-    if (_buf_len > 0) {
-      m = min(_buf_len, n);
-      memcpy(buf, _buf, m);
-      memcpy(_buf, _buf + m, _buf_len - m);
-      remain -= m;
-      _buf_len -= m;
+    int read_len = 0;
+    if (cache_size > 0) {
+      //copies cache content
+      read_len = min(n, cache_size);
+      memcpy(buf, cache, read_len);
+      memcpy(cache, cache + read_len, cache_size - read_len);
+      cache_size -= read_len;
     }
-    if (remain == 0) {
-      return n;
-    }
-    int n_read = 0, n_get;
-    while (n_read < remain) {
-      n_get = read4(buf + offset);
-      offset += n_get;
-      n_read += n_get;
-      if (n_get < 4) {
+    while (read_len < n) {
+      int cur = read4(buf + read_len);
+      read_len += cur;
+      if (cur < 4) {
         break;
       }
     }
-    if (n_read > remain) {
-      memcpy(_buf, buf + n, n_read - remain);
-      _buf_len = n_read - remain;
+    if (read_len > n) {
+      //copy remain reading chars to cache
+      memcpy(cache, buf + n, read_len - n);
+      cache_size = read_len - n;
     }
-    int valid_len = min(offset, n);
-    buf[valid_len] = '\0';
-    return valid_len;
+    read_len = min(read_len, n);
+    buf[read_len] = '\0';
+    return read_len;
   }
 };
-
-int main(){
-  return 0;
-}
