@@ -28,5 +28,30 @@ public:
   }
 
   vector<int> closestKValues2(TreeNode* root, double target, int k) {
+    queue<int> q;
+    vector<int> res;
+    dfs(q, root, target, k);
+    while (!q.empty()) {
+      res.push_back(q.front());
+      q.pop();
+    }
+    return res;
+  }
+
+  void dfs(queue<int>& q, TreeNode* subroot, double target, int k) {
+    if (!subroot) {
+      return;
+    }
+    dfs(q, subroot->left, target, k);
+    if (q.size() < k) {
+      q.push(subroot->val);
+      dfs(q, subroot->right, target, k);
+    }else {
+      if (fabs(q.front() - target) > fabs(subroot->val - target)) {
+        q.pop();
+        q.push(subroot->val);
+        dfs(q, subroot->right, target, k);
+      }
+    }
   }
 };
