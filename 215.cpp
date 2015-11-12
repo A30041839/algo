@@ -32,6 +32,20 @@ public:
       return findKthLargest1(nums, pos + 1, end, k - rank);
     }
   }
+
+  int iterative(vector<int>& nums, int k) {
+    int beg = 0, end = nums.size() - 1;
+    int pos = partition(nums, beg, end);
+    while (pos != k - 1) {
+      if (pos < k - 1) {
+        beg = pos + 1;
+      }else {
+        end = pos - 1;
+      }
+      pos = partition(nums, beg, end);
+    }
+    return nums[pos];
+  }
 };
 
 int main() {

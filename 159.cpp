@@ -63,6 +63,20 @@ public:
       }
       res = max(res, i - beg + 1);
     }
+
+    int lengthOfLongestSubstringTwoDistinct4(string s) {
+      int maxlen = 0;
+      vector<int> mp(256, 0);
+      int cnt = 0;
+      for (int i = 0, beg = 0; i < s.size(); ++i) {
+        if (++mp[s[i]] == 1) cnt++;
+        while (cnt == 3) {
+          if (--mp[s[beg++]] == 0) cnt--;
+        }
+        maxlen = max(maxlen, i - beg + 1);
+      }
+      return maxlen;
+    }
     return res;
   }
 };

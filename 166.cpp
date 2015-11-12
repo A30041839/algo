@@ -1,65 +1,33 @@
 #include "leetcode.h"
-
 using namespace std;
 
 class Solution {
 public:
   string fractionToDecimal(int numerator, int denominator) {
-    return fractionToDecimal1(numerator, denominator);
-  }
-
-  //reminder: the recurring position doesn't always start from 0
-  string fractionToDecimal1(int numerator, int denominator){
-    string res;
-    int resSgn = sgn(numerator) * sgn(denominator);
-    long numerator1 = abs((long)numerator);
-    long denominator1 = abs((long)denominator);
-    //generate integer part first
-    res = genIntegerPart(numerator1, denominator1, resSgn);
-    //if mod is not zero, generate decimal part
-    if (numerator1 % denominator1) {
-      res.append(genDecimalPart(numerator1 % denominator1, denominator1));
+    if (numerator == 0) return "0";
+    if (denominator == 0) return "";
+    int sgn = 1;
+    if ((numerator < 0 and denominator > 0) or (numerator > 0 and denominator < 0)) sgn = -1;
+    long _num = abs((long)numerator);
+    long _den = abs((long)denominator);
+    long intPart = _num / _den;
+    _num %= _den;
+    string _intPart = sgn == 1 ? to_string(intPart) : "-" + to_string(intPart);
+    if (_num == 0) return _intPart;
+    unordered_map<int, int> mp;
+    string frac_part;
+    while (_num > 0 and mp.find(_num) == mp.end()) {
+      mp[_num] = (int)frac_part.size();
+      frac_part.push_back(_num * 10 / _den + '0');
+      _num = _num * 10 % _den;
     }
-    return res;
-  }
-
-private:
-  int sgn(int num){
-    return num >= 0 ? 1 : -1;
-  }
-
-  string genIntegerPart(long m, long n, int sgn) {
-    string res;
-    long i = m / n;
-    do {
-      res.push_back(i % 10 + '0');
-      i /= 10;
-    } while (i);
-    if (sgn == -1 and m != 0) {
-      res.push_back('-');
+    if (_num == 0) {
+      return _intPart + "." + frac_part;
+    }else {
+      frac_part.insert(frac_part.begin() + mp[_num], '(');
+      frac_part.push_back(')');
+      return _intPart + "." + frac_part;
     }
-    reverse(begin(res), end(res));
-    return res;
-  }
-
-  string genDecimalPart(long m, long n) {
-    string res;
-    res.push_back('.');
-    unordered_map<long, int> pos;
-    int k = 1;
-    while (m) {
-      if (pos.find(m) != pos.end()) {
-        res.insert(res.begin() + pos[m], '(');
-        res.push_back(')');
-        break;
-      }else {
-        pos[m] = k++;
-        m *= 10;
-        res.push_back('0' + m / n);
-        m %= n;
-      }
-    }
-    return res;
   }
 };
 

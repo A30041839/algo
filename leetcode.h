@@ -116,7 +116,7 @@ void print_matrix(std::vector<std::vector<T>>& matrix) {
   int m = (int)matrix.size(), n = (int)matrix[0].size();
   for (int i = 0; i < m; ++i) {
     for (int j = 0; j < n; ++j) {
-      std::cout << matrix[i][j] << ",";
+      std::cout << matrix[i][j] << " ";
     }
     std::cout << std::endl;
   }
