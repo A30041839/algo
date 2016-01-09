@@ -56,12 +56,33 @@ public:
     return s.substr(start, maxlen);
   }
 
-  string longestPalindrome3(string s){
+  string longestPalindrome3(string s) {
+    if (s.empty()) return 0;
+    int n = s.size();
+    vector<vector<bool>> dp(n, vector<bool>(n, false));
+    string res;
+    int maxlen = 0;
+    for (int len = 1; len <= n; ++len) {
+      for (int i = 0; i <= n - len; ++i) {
+        if (len == 1) {
+          dp[i][i] = true;
+        }else if (len == 2) {
+          dp[i][i + 1] = s[i] == s[i + 1];
+        }else {
+          dp[i][i + len - 1] = s[i] == s[i + len - 1] ? dp[i + 1][i + len - 2] : false;
+        }
+        if (len > maxlen and dp[i][i + len - 1]) {
+          maxlen = len;
+          res = s.substr(i, len);
+        }
+      }
+    }
+    return res;
   }
 };
 
 int main(){
   Solution s;
-  cout << s.longestPalindrome("abba") << endl;
+  cout << s.longestPalindrome("aaaaaa") << endl;
   return 0;
 }
