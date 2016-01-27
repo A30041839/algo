@@ -36,24 +36,17 @@ public:
     if (intervals.empty()) {
       return 0;
     }
-    sort(intervals.begin(), intervals.end(), [](const Interval& lhs, const Interval& rhs) {
-      return lhs.start < rhs.start;});
-    auto cmp = [](const Interval& lhs, const Interval& rhs) {return lhs.end > rhs.end;};
-    priority_queue<Interval, vector<Interval>, decltype(cmp)> pq(cmp);
-    pq.push(intervals[0]);
-    int res = 1;
     int n = intervals.size();
-    for (int i = 1; i < n; ++i) {
-      if (intervals[i].start < intervals[i - 1].end) {
-        while (!pq.empty() and pq.top().end <= intervals[i].start) {
-          pq.pop();
-        }
-        pq.push(intervals[i]);
-        res = max(res, (int)pq.size());
-      }else {
+    auto cmp = [](Interval& lhs, Interval& rhs) {return lhs.end > rhs.end;};
+    priority_queue<Interval, vector<Interval>, decltype(cmp)> pq(cmp);
+    sort(begin(intervals), end(intervals), [](Interval& lhs, Interval& rhs) {return lhs.start < rhs.start;});
+    int res = 0;
+    for (int i = 0; i < n; ++i) {
+      pq.push(intervals[i]);
+      while (!pq.empty() and pq.top().end <= intervals[i].start) {
         pq.pop();
-        pq.push(intervals[i]);
       }
+      res = max(res, (int)pq.size());
     }
     return res;
   }
